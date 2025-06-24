@@ -3,7 +3,6 @@
 #include "lemlib/chassis/chassis.hpp"
 
 extern lemlib::Chassis chassis;
-
 extern pros::Controller primary;
 
 extern pros::Motor hopper;

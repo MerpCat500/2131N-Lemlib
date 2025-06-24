@@ -4,8 +4,8 @@
 #include "lemlib/chassis/chassis.hpp"
 #include "pros/motor_group.hpp"
 
-pros::MotorGroup leftMotors({-10, -9, -8}, pros::MotorGear::blue, pros::MotorUnits::deg);
-pros::MotorGroup rightMotors({1, 2, 3}, pros::MotorGear::blue, pros::MotorUnits::deg);
+pros::MotorGroup leftMotors({10, -9, -8}, pros::MotorGear::blue, pros::MotorUnits::deg);
+pros::MotorGroup rightMotors({-1, 2, 3}, pros::MotorGear::blue, pros::MotorUnits::deg);
 
 pros::Motor hopper(4, pros::MotorGear::blue, pros::MotorUnits::deg);
 pros::Motor btmStage(5, pros::MotorGear::blue, pros::MotorUnits::deg);
