@@ -4,6 +4,7 @@
 
 #include "2131N/robot-config.hpp"
 #include "2131N/systems/intake.hpp"
+#include "lemlib/chassis/chassis.hpp"
 
 void debug(bool is_red_team)
 {
@@ -14,34 +15,26 @@ void debug(bool is_red_team)
 void leftSideAWP(bool is_red_team)
 {
   // ! Initial
-  chassis.setPose({72 - 9 - 7 - 0.5 - 2, 25 - 13.5 / 2, -90});
+  chassis.setPose({72.0 - 13.25 / 2 - 0.375 - 9, 24 - 7 - 9, 0});
 
-  // * Move to Loader
-  chassis.moveToPoint(24.5, 25 - 13.5 / 2 + 2, 2000, {}, false);
-  chassis.turnToPoint(24.5, 0, 800, {}, false);
-
-  // * Unload Matchload
-  matchload_unloader.extend();
-  pros::delay(500);  // Delay to let Piston Extend
-  chassis.moveToPoint(24.5, 0, 1400, {.minSpeed = 127}, true);
+  // * Intake Group of three
   intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::STORE);
+  chassis.moveToPose(49.0, 47.5, -50, 2000, {.lead = 0.4, .maxSpeed = 80}, false);
 
-  pros::delay(650);              // Delay for balls
-  matchload_unloader.retract();  // Retract Piston
-  chassis.waitUntilDone();       // Wait Until Moving forwards is done
+  // * Score in middle goals
+  chassis.turnToPoint(72.0, 73.0, 800, {}, false);
+  chassis.moveToPoint(58, 59, 1000, {}, false);
+  intake.setState(Intake::IntakeState::SCORE_MIDDLE, Intake::StorageState::UNSTORE, 12000);
+  pros::delay(2000);
 
-  //! Reset Pose
-  auto current_pose = chassis.getPose();
-  chassis.setPose(
-      {current_pose.x , 14 - 9.7 - 3, current_pose.theta});  // Cancel out wheel drift
+  // * Move to second group of three
+  chassis.swingToPoint(72, 43, lemlib::DriveSide::LEFT, 800, {.minSpeed = 1}, false);
+  chassis.moveToPoint(72, 43, 2000, {}, false);
+  intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::STORE);
+  chassis.moveToPose(96, 50, 140, 2000, {.lead = 0.3, .maxSpeed = 70}, false);
 
-  chassis.moveToPoint(24, 24, 800, {.forwards = false, .maxSpeed = 80}, false);
-  pros::delay(200);
-
-  intake.setState(Intake::IntakeState::IDLE, Intake::StorageState::STORE);
-
-  chassis.turnToPoint(22, 48, 1000, {}, false);
-  chassis.moveToPoint(24, 34, 800, {.minSpeed = 20}, false);
-
-  intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::UNSTORE);
+  // * Score in bottom middle goal
+  chassis.turnToPoint(72.0, 71.0, 800, {}, false);
+  chassis.moveToPoint(72.0, 71.0, 1000, {}, false);
+  intake.setState(Intake::IntakeState::OUTTAKE, Intake::StorageState::UNSTORE, 6000);
 }
