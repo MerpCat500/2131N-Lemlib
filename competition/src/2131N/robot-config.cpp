@@ -1,17 +1,21 @@
-#include "robot-config.hpp"
+#include "2131N/robot-config.hpp"
 
-#include "lemlib/api.hpp"
 #include "lemlib/chassis/chassis.hpp"
 #include "pros/motor_group.hpp"
+#include "pros/optical.hpp"
 
-pros::MotorGroup leftMotors({10, -9, -8}, pros::MotorGear::blue, pros::MotorUnits::deg);
-pros::MotorGroup rightMotors({-1, 2, 3}, pros::MotorGear::blue, pros::MotorUnits::deg);
+pros::MotorGroup left_motors({10, -9, -8}, pros::MotorGear::blue, pros::MotorUnits::deg);
+pros::MotorGroup right_motors({-1, 2, 3}, pros::MotorGear::blue, pros::MotorUnits::deg);
+pros::Imu inertial(21);
 
-pros::Motor hopper(11, pros::MotorGear::blue, pros::MotorUnits::deg);
+pros::Motor hopper(-11, pros::MotorGear::blue, pros::MotorUnits::deg);
 pros::Motor btmStage(20, pros::MotorGear::blue, pros::MotorUnits::deg);
 pros::Motor topStage(-12, pros::MotorGear::blue, pros::MotorUnits::deg);
 
-pros::Imu inertial(21);
+pros::Optical optical1(5);
+pros::Optical optical2(7);
+
+pros::adi::Pneumatics matchload_unloader('H', false);
 
 pros::Controller primary(pros::E_CONTROLLER_MASTER);
 
@@ -22,7 +26,7 @@ lemlib::OdomSensors sensors{
     nullptr,  //
     &inertial};
 
-lemlib::Drivetrain drivetrain(&leftMotors, &rightMotors, 13.25, 2.75, 450.0, 8.0);
+lemlib::Drivetrain drivetrain(&left_motors, &right_motors, 13.25, 2.75, 450.0, 8.0);
 
 // lateral PID controller
 lemlib::ControllerSettings lateral_controller(
@@ -51,3 +55,19 @@ lemlib::ControllerSettings angular_controller(
 );
 
 lemlib::Chassis chassis(drivetrain, lateral_controller, angular_controller, sensors);
+
+
+Intake intake(
+    &topStage,
+    &btmStage,
+    &hopper,
+    {&optical1, &optical2},
+    &primary,
+    pros::E_CONTROLLER_DIGITAL_L2,
+    pros::E_CONTROLLER_DIGITAL_L1,
+    pros::E_CONTROLLER_DIGITAL_R2,
+    pros::E_CONTROLLER_DIGITAL_R1,
+    150.0f,
+    20.0f);
+
+Screen screen;
