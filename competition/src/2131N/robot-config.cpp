@@ -26,7 +26,7 @@ lemlib::OdomSensors sensors{
     nullptr,  //
     &inertial};
 
-lemlib::Drivetrain drivetrain(&left_motors, &right_motors, 13.25, 2.75, 450.0, 8.0);
+lemlib::Drivetrain drivetrain(&left_motors, &right_motors, 10, 3.3825, 400.0, 8.0);
 
 // lateral PID controller
 lemlib::ControllerSettings lateral_controller(
@@ -38,7 +38,7 @@ lemlib::ControllerSettings lateral_controller(
     100,  // small error range timeout, in milliseconds
     3,    // large error range, in inches
     500,  // large error range timeout, in milliseconds
-    20    // maximum acceleration (slew)
+    10    // maximum acceleration (slew)
 );
 
 // angular PID controller

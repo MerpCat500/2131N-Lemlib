@@ -1,8 +1,9 @@
 #include "main.h"
 
+#include "2131N/robot-config.hpp"
 #include "autonomous.hpp"
 #include "pros/misc.h"
-#include "2131N/robot-config.hpp"
+
 
 /**
  * @brief Runs before everything else.
@@ -14,19 +15,20 @@ void initialize()
 
   screen.addAutos({
       {"Debug", "Debug Auto, DO NOT RUN AT COMP", debug},
+      {"Left Side AWP", "Left Side Autonomous Win Point", leftSideAWP},
   });
 
-  screen.addTelemetries(
-      {{"Battery", []() { return std::to_string(pros::battery::get_capacity()); }},
-       {"Position",
-        []() {
-          auto position = chassis.getPose();
-          return "\n  X: " + std::to_string(position.x) +
-                 "\n  Y: " + std::to_string(position.y) +
-                 "\n  Theta: " + std::to_string(position.theta);
-        }},
-       });
-  
+  screen.addTelemetries({
+      {"Battery", []() { return std::to_string(pros::battery::get_capacity()); }},
+      {"Position",
+       []() {
+         auto position = chassis.getPose();
+         return "\n  X: " + std::to_string(position.x) + "\n  Y: " + std::to_string(position.y) +
+                "\n  Theta: " + std::to_string(position.theta);
+       }},
+  });
+
+  screen.initialize(1, true);
 }
 
 /**
@@ -45,9 +47,7 @@ void competition_initialize() {}
  * @brief Runs when robot is in autonomous mode.
  *
  */
-void autonomous() {
-  screen.getCurrentAutoCallback()(screen.getRedTeam());
-}
+void autonomous() { screen.getCurrentAutoCallback()(screen.getRedTeam()); }
 
 /**
  * @brief Runs when the robot is in driver control mode.
