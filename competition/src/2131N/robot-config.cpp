@@ -2,7 +2,6 @@
 
 #include "lemlib/chassis/chassis.hpp"
 #include "pros/motor_group.hpp"
-#include "pros/optical.hpp"
 
 pros::MotorGroup left_motors({10, -9, -8}, pros::MotorGear::blue, pros::MotorUnits::deg);
 pros::MotorGroup right_motors({-1, 2, 3}, pros::MotorGear::blue, pros::MotorUnits::deg);
@@ -12,10 +11,12 @@ pros::Motor hopper(-11, pros::MotorGear::blue, pros::MotorUnits::deg);
 pros::Motor btmStage(20, pros::MotorGear::blue, pros::MotorUnits::deg);
 pros::Motor topStage(-12, pros::MotorGear::blue, pros::MotorUnits::deg);
 
-pros::Optical optical1(5);
-pros::Optical optical2(7);
+pros::Distance right_distance(5);
+pros::Distance left_distance(7);
+pros::Distance back_distance(18);
 
 pros::adi::Pneumatics matchload_unloader('H', false);
+pros::adi::Pneumatics storage_unstore('A', false);
 
 pros::Controller primary(pros::E_CONTROLLER_MASTER);
 
@@ -56,12 +57,11 @@ lemlib::ControllerSettings angular_controller(
 
 lemlib::Chassis chassis(drivetrain, lateral_controller, angular_controller, sensors);
 
-
 Intake intake(
     &topStage,
     &btmStage,
     &hopper,
-    {&optical1, &optical2},
+    {},
     &primary,
     pros::E_CONTROLLER_DIGITAL_L2,
     pros::E_CONTROLLER_DIGITAL_L1,

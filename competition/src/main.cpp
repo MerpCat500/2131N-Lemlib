@@ -4,7 +4,6 @@
 #include "autonomous.hpp"
 #include "pros/misc.h"
 
-
 /**
  * @brief Runs before everything else.
  *
@@ -15,7 +14,10 @@ void initialize()
 
   screen.addAutos({
       {"Debug", "Debug Auto, DO NOT RUN AT COMP", debug},
-      {"Left Side AWP", "Left Side Autonomous Win Point", leftSideAWP},
+      {"Left Side", "Left Side Half Autonomous Win Point", leftSideAWP},
+      {"Right Side", "Right Side Half Autonomous Win Point", rightSideAWP},
+      {"Skills", "Skills Autonomous", skills},
+
   });
 
   screen.addTelemetries({
@@ -28,7 +30,7 @@ void initialize()
        }},
   });
 
-  screen.initialize(1, true);
+  screen.initialize(3, true);
 }
 
 /**
@@ -64,6 +66,13 @@ void opcontrol()
         true);
 
     intake.teleOp();
+
+    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
+    {
+      matchload_unloader.toggle();
+    }
+
+    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) { storage_unstore.toggle(); }
 
     pros::delay(10);
   }
