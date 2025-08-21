@@ -72,8 +72,6 @@ void opcontrol()
       matchload_unloader.toggle();
     }
 
-    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) { storage_unstore.toggle(); }
-
     pros::delay(10);
   }
 }
