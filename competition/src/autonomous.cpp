@@ -11,13 +11,13 @@
 void debug(bool is_red_team)
 {
   chassis.setPose({0, 0, 0});
-  chassis.moveToPoint(0, 24, 2000, {}, false);
+  intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::STORE);
 }
 
 void leftSideAWP(bool is_red_team)
 {
-  // ! Initial
-  chassis.setPose({72.0 - 13.25 / 2 - 0.375 - 9, 24 - 7 - 9, 0});
+  // ! InitialS
+  chassis.setPose({48.0 + 7.0f, 24 - 7 - 9, 0});
 
   // * Intake Group of three
   intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::STORE);
@@ -25,25 +25,25 @@ void leftSideAWP(bool is_red_team)
 
   // * Score in middle goals
   chassis.turnToPoint(72.0, 72, 800, {}, false);
-  chassis.moveToPose(71.5 - 12.7 - 2, 73.5 - 12.7 - 2, 43, 1000, {.lead = 0.1}, false);
-  intake.setState(Intake::IntakeState::SCORE_MIDDLE, Intake::StorageState::UNSTORE, 9600);
+  chassis.moveToPose(72 - 12.7 - 2, 72 - 12.7 - 2, 45, 1000, {.lead = 0.1}, false);
+  intake.setState(Intake::IntakeState::SCORE_MIDDLE, Intake::StorageState::UNSTORE, 10000);
   pros::delay(1000);
   intake.setState(Intake::IntakeState::SCORE_MIDDLE, Intake::StorageState::UNSTORE, 12000);
   pros::delay(1000);
 
   // ? Go to Matchloader
-  chassis.moveToPoint(22, 24, 2200, {.forwards = false}, false);
+  chassis.moveToPoint(23.5, 24, 2200, {.forwards = false}, false);
   chassis.turnToHeading(180, 800, {}, false);
 
   // * Matchloader
   matchload_unloader.extend();
   pros::delay(200);  // Wait for piston to extend
   intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::STORE);
-  chassis.moveToPoint(23, 0, 850, {.maxSpeed = 70, .minSpeed = 70}, false);
+  chassis.moveToPoint(23.5, 0, 950, {.maxSpeed = 66, .minSpeed = 66}, false);
 
   // * Back Up
   auto pose1 = chassis.getPose();
-  chassis.moveToPoint(pose1.x - 5, pose1.y + 10, 1000, {.forwards = false}, true);
+  chassis.moveToPoint(pose1.x - 2, pose1.y + 10, 1000, {.forwards = false}, true);
 
   pros::delay(300);
   matchload_unloader.retract();
@@ -51,7 +51,7 @@ void leftSideAWP(bool is_red_team)
   chassis.turnToHeading(0, 1200, {.maxSpeed = 80});
 
   auto pose2 = chassis.getPose();
-  chassis.moveToPose(pose2.x - 1.5, pose2.y + 20, 0, 1200, {.lead = 0.2}, false);
+  chassis.moveToPose(pose2.x - 0.5, pose2.y + 20, 0, 1200, {.lead = 0.2}, false);
   intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::UNSTORE);
 
   // // * Clear the matchload tube
@@ -66,7 +66,7 @@ void leftSideAWP(bool is_red_team)
 void rightSideAWP(bool is_red_team)
 {
   // ! Initial
-  chassis.setPose({-(72.0 - 13.25 / 2 - 0.375 - 9), 24 - 7 - 9, -0});
+  chassis.setPose({-(48.0f + 7.0f), 24 - 7 - 9, -0});
 
   // * Intake Group of three
   intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::STORE);
@@ -79,18 +79,18 @@ void rightSideAWP(bool is_red_team)
   pros::delay(2000);
 
   // ? Go to Matchloader
-  chassis.moveToPoint(-28, 24, 3000, {.forwards = false, .maxSpeed = 100}, false);
+  chassis.moveToPoint(-25, 24, 3000, {.forwards = false, .maxSpeed = 100}, false);
   chassis.turnToHeading(-180, 800, {}, false);
 
   // * Matchloader
   matchload_unloader.extend();
   pros::delay(200);  // Wait for piston to extend
   intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::STORE);
-  chassis.moveToPoint(-21, 0, 900, {.maxSpeed = 60, .minSpeed = 60}, false);
+  chassis.moveToPoint(-24, -1000, 900, {.maxSpeed = 60, .minSpeed = 60}, false);
 
   // * Back Up
   auto pose1 = chassis.getPose();
-  chassis.moveToPoint(pose1.x + 3, pose1.y + 10, 1000, {.forwards = false}, true);
+  chassis.moveToPoint(pose1.x - 1.5, pose1.y + 10, 1000, {.forwards = false}, true);
 
   pros::delay(300);
   matchload_unloader.retract();
@@ -98,7 +98,8 @@ void rightSideAWP(bool is_red_team)
   chassis.turnToHeading(-0, 1200, {.maxSpeed = 80});
 
   auto pose2 = chassis.getPose();
-  chassis.moveToPose(pose2.x, pose2.y + 13, -0, 1200, {.lead = 0.2}, false);
+
+  chassis.moveToPose(pose2.x - 0.25, pose2.y + 19, -0, 1200, {.lead = 0.2}, false);
   intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::UNSTORE);
 
   // // * Clear the matchload tube
@@ -117,21 +118,20 @@ void skills(bool is_red_team)
 
   // * Go to loader
   chassis.moveToPoint(120, 25.5, 2000, {}, false);
-  chassis.turnToPoint(120, 0, 1000, {}, false);
-  chassis.moveToPoint(120, 0, 850, {}, true);
+  chassis.turnToPoint(121.5, 0, 1000, {}, false);
 
-  float unscore_speed = 35;
+  float unscore_speed = 100;
 
   // * Unload Loader
   matchload_unloader.extend();
   pros::delay(200);  // Wait for piston to extend
   intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::STORE);
   chassis.moveToPoint(
-      120, -10, 1500, {.maxSpeed = unscore_speed, .minSpeed = unscore_speed}, false);
+      121.5, -1000, 2800, {.maxSpeed = unscore_speed, .minSpeed = unscore_speed}, false);
 
   // * Back Up
   auto pose1 = chassis.getPose();
-  chassis.moveToPoint(pose1.x, pose1.y + 10, 1000, {.forwards = false}, true);
+  chassis.moveToPoint(pose1.x - 1.5, pose1.y + 10, 1000, {.forwards = false}, true);
   intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::IDLE);
   pros::delay(300);
   matchload_unloader.retract();
@@ -140,7 +140,7 @@ void skills(bool is_red_team)
 
   // * Score balls
   chassis.turnToHeading(-0, 1200, {.maxSpeed = 80});
-  chassis.moveToPose(pose1.x, pose1.y + 30, 0, 1200, {.lead = 0.2, .minSpeed = 20}, false);
+  chassis.moveToPose(pose1.x - 1.5, pose1.y + 30, 0, 1200, {.lead = 0.2, .minSpeed = 20}, false);
   intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::UNSTORE);
   pros::delay(3000);
 
@@ -160,7 +160,7 @@ void skills(bool is_red_team)
        (left_distance.get_distance() / 25.4f + 5.75f),
        chassis.getPose().theta});
 
-  unscore_speed = 40;
+  unscore_speed = 100;
 
   // * Move To Loader 2
   chassis.moveToPoint(106, 120, 4000, {}, false);
@@ -196,19 +196,17 @@ void skills(bool is_red_team)
 
   // * Score balls
   chassis.turnToHeading(180, 1200, {.maxSpeed = 80});
-  chassis.moveToPose(pose3.x + 1.25, pose3.y - 30, -180, 1200, {.lead = 0.2}, false);
+  chassis.moveToPose(pose3.x + 1.25, pose3.y - 26.5, -180, 1200, {.lead = 0.2}, false);
   intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::UNSTORE);
-  pros::delay(2000);  // Let Balls Score
-  intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::UNSTORE);
-  pros::delay(2000);
+  pros::delay(4000);  // Let Balls Score
 
   // ! Tare Position
   chassis.setPose(
       {144.0f - (left_distance.get_distance() / 25.4f + 5.75f),
-       96 + 7 + 1.25,
+       96 + 7 + 2,
        chassis.getPose().theta});
 
-  unscore_speed = 45;
+  unscore_speed = 100;
 
   // * Loader 3
   intake.setState(Intake::IntakeState::INTAKE, Intake::StorageState::STORE);

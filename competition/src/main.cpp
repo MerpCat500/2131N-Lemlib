@@ -30,7 +30,7 @@ void initialize()
        }},
   });
 
-  screen.initialize(3, true);
+  screen.initialize(2, true);
 }
 
 /**
