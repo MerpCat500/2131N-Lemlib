@@ -11,38 +11,27 @@
 
 #pragma once
 
-#include <vector>
-
+#include "2131N/utils/change_detector.hpp"
+#include "pros/abstract_motor.hpp"
+#include "pros/adi.hpp"
+#include "pros/distance.hpp"
 #include "pros/misc.h"
 #include "pros/motors.hpp"
-#include "pros/optical.hpp"
 
 class Intake
 {
  public:  // State System
-  enum class IntakeState
-  {
-    IGNORE,        // Used to IGNORE intake state
-    IDLE,          // Turns off intake (ie. brake)
-    INTAKE,        // Turns on the intake
-    SCORE_MIDDLE,  // Sets intake so it's trying to score in the middle goal
-    OUTTAKE,       // Spins intake in reverse as to outtake
-  };
-
-  enum class StorageState
-  {
-    IGNORE,   // used to IGNORE storage state
-    IDLE,     // Turns off the storage (ie. brake)
-    STORE,    // Turns on the storage to store intaking balls
-    UNSTORE,  // Spins the storage in reverse as to release all the balls
-  };
-
  private:
   pros::Motor* bottom_stage_;  // Pointer to the bottom stage motor
+  pros::Motor* middle_stage_;  // Pointer to the storage motor
   pros::Motor* top_stage_;     // Pointer to the top stage motor
-  pros::Motor* storage_;       // Pointer to the storage motor
 
-  std::vector<pros::Optical*> color_sensors_;  // list of pointers to color sensors
+  pros::adi::Pneumatics* middle_stage_gate_;  // Middle stage gate
+
+  pros::Distance* bottom_detector_;  // Pointer to the bottom stage detector
+  float detection_range_;            // Anything less than this number will be counted as detected
+  bool ball_detected_ = false;       // Is the detector reading a ball
+  ChangeDetector<bool> ball_detector;
 
   pros::Controller* primary_;  // Controller (for tele-op)
 
@@ -51,67 +40,163 @@ class Intake
   pros::controller_digital_e_t
       outtake_button_;  // Outtake Button (Spins Top and Bottom Stage to cycle ball down)
 
+  pros::controller_digital_e_t score_top_button_;  // Store Button (Spins Storage in to store balls)
   pros::controller_digital_e_t
-      store_button_;  // Store Button (Spins Storage in to store intaking balls)
-  pros::controller_digital_e_t
-      unstore_button_;  // Unstore Button (Spins Storage out to remove stored balls)
+      score_middle_button;  // Unstore Button (Spins Storage out to remove stored balls)
 
-  pros::Task color_sort_task_;       // Color Sort task
-  bool color_sort_enabled_ = false;  // Whether or not Color Sort is enabled
+  pros::Task update_thread_;
 
-  const float
-      red_sort_bound_;  // Boundary at which to sort out red ball (separates from background noise)
-  const float blue_sort_bound_;  // Boundary at which to sort out blue ball
+  enum class states
+  {
+    STOPPED,
+    OUTTAKE,
+    STORING,
+    SCORING,
+    SCORE_MIDDLE,
+  } state;
 
-  bool is_red_team_ = true;  // Are we on red or blue team?
-
-  bool sorting_ = false;  // Is the Sort Task Sorting a ball?
-
-  // Pre Sort States and Current States
-  IntakeState pre_sort_intake_state_ = IntakeState::IDLE;
-  IntakeState current_intake_state_ = IntakeState::IDLE;
-
-  StorageState pre_sort_storage_state_ = StorageState::IDLE;
-  StorageState current_storage_state_ = StorageState::IDLE;
+  bool score_mode_ = false;
+  bool score_middle_ = false;
 
  public:
-  /**
-   * @brief Construct an Intake
-   *
-   * @param top_stage_motor Pointer to top stage motor
-   * @param bottom_stage_motor Pointer to bottom stage motor
-   * @param storage_motor Pointer to storage motor
-   * @param color_sensors List of pointers to color sensors
-   * @param controller Pointer to the controller
-   * @param intake_button Intake Button
-   * @param outtake_button Outtake Button
-   * @param store_button Store Button
-   * @param unstore_button Unstore Button
-   * @param red_sort_bound Red Sorting Bound
-   * @param blue_sort_bound Blue Sorting Bound
-   */
   Intake(
-      pros::Motor* top_stage_motor,
-      pros::Motor* bottom_stage_motor,
-      pros::Motor* storage_motor,
-      std::vector<pros::Optical*> color_sensors,
-      pros::Controller* controller,
+      pros::Motor* bottom_stage,
+      pros::Motor* middle_stage,
+      pros::Motor* top_stage,
+      pros::Distance* bottom_detector,
+      pros::adi::Pneumatics* middle_gate,
+      float detection_range,
+      pros::Controller* primary,
       pros::controller_digital_e_t intake_button,
       pros::controller_digital_e_t outtake_button,
-      pros::controller_digital_e_t store_button,
-      pros::controller_digital_e_t unstore_button,
-      const float red_sort_bound,
-      const float blue_sort_bound);
+      pros::controller_digital_e_t score_top_button,
+      pros::controller_digital_e_t score_middle_button)
+      : bottom_stage_(bottom_stage),
+        middle_stage_(middle_stage),
+        top_stage_(top_stage),
+        middle_stage_gate_(middle_gate),
+        bottom_detector_(bottom_detector),
+        detection_range_(detection_range),
+        primary_(primary),
+        intake_button_(intake_button),
+        outtake_button_(outtake_button),
+        score_top_button_(score_top_button),
+        score_middle_button(score_middle_button),
+        update_thread_(
+            [this]() {
+              while (true)
+              {
+                this->update();
+                pros::delay(10);
+              }
+            },
+            "Intake Update")
+  {
+  }
 
-  void teleOp();
+  void teleOp()
+  {
+    if (primary_->get_digital_new_press(intake_button_))
+    {
+      if (score_middle_) { setState(states::SCORE_MIDDLE); }
+      else if (score_mode_) { setState(states::SCORING); }
+      else { setState(states::STORING); }
+    }
+    else if (primary_->get_digital_new_press(outtake_button_)) { setState(states::OUTTAKE); }
+    else if (
+        primary_->get_digital_new_release(intake_button_) ||
+        primary_->get_digital_new_release(outtake_button_))
+    {
+      setState(states::STOPPED);
+    }
 
-  void setState(
-      IntakeState intake_state = IntakeState::IGNORE,
-      StorageState storage_state = StorageState::IGNORE,
-      std::int16_t voltage = 12000);
+    if (primary_->get_digital_new_press(score_top_button_))
+    {
+      score_middle_ = false;
+      score_mode_ = !score_mode_;
+      if (primary_->get_digital(intake_button_))
+      {
+        if (score_middle_) { setState(states::SCORE_MIDDLE); }
+        else if (score_mode_) { setState(states::SCORING); }
+        else
+        {
+          setState(states::STORING);
+          middle_stage_->brake();
+        }
+      }
+    }
+    else if (primary_->get_digital_new_press(score_middle_button))
+    {
+      score_middle_ = !score_middle_;
 
-  void setSortEnabled(bool sort_enabled, bool is_red_team);
+      middle_stage_gate_->set_value(score_middle_);
+
+      if (score_middle_ == false) { score_mode_ = false; }
+      if (primary_->get_digital(intake_button_))
+      {
+        if (score_middle_) { setState(states::SCORE_MIDDLE); }
+        else if (score_mode_) { setState(states::SCORING); }
+        else
+        {
+          setState(states::STORING);
+          middle_stage_->brake();
+        }
+      }
+    }
+  }
+
+  void setState(states new_state) { state = new_state; }
 
  private:
-  void update();
+  void update()
+  {
+    ball_detected_ = (bottom_detector_->get() < detection_range_);
+    ball_detector.checkValue(ball_detected_);
+
+    switch (state)
+    {
+      case states::STORING:
+
+        bottom_stage_->move_voltage(12000);
+        top_stage_->move_voltage(-3000);
+
+        if (ball_detector.getChanged() && ball_detector.getValue())
+        {
+          middle_stage_->set_encoder_units_all(pros::MotorEncoderUnits::deg);
+
+          middle_stage_->move_relative(200, 80);
+        }
+
+        break;
+      case states::SCORE_MIDDLE:
+
+        // TODO: Add reversing behavior
+        bottom_stage_->move_voltage(12000);
+        middle_stage_->move_voltage(12000);
+        top_stage_->move_voltage(-6000);
+        break;
+      case states::OUTTAKE:
+
+        bottom_stage_->move_voltage(-12000);
+        middle_stage_->move_voltage(-12000);
+        top_stage_->move_voltage(-12000);
+        break;
+      case states::SCORING:
+
+        bottom_stage_->move_voltage(12000);
+        middle_stage_->move_voltage(12000);
+        top_stage_->move_voltage(12000);
+        break;
+      case states::STOPPED:
+
+        bottom_stage_->set_brake_mode_all(pros::MotorBrake::coast);
+        middle_stage_->set_brake_mode_all(pros::MotorBrake::hold);
+        top_stage_->set_brake_mode_all(pros::MotorBrake::coast);
+
+        bottom_stage_->brake();
+        middle_stage_->brake();
+        top_stage_->brake();
+        break;
+    }
+  }
 };

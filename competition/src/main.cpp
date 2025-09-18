@@ -67,11 +67,6 @@ void opcontrol()
 
     intake.teleOp();
 
-    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
-    {
-      matchload_unloader.toggle();
-    }
-
     pros::delay(10);
   }
 }

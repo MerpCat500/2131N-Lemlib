@@ -1,22 +1,20 @@
 #include "2131N/robot-config.hpp"
 
 #include "lemlib/chassis/chassis.hpp"
+#include "pros/distance.hpp"
 #include "pros/motor_group.hpp"
 
-pros::MotorGroup left_motors({10, -9, -8}, pros::MotorGear::blue, pros::MotorUnits::deg);
-pros::MotorGroup right_motors({-1, 2, 3}, pros::MotorGear::blue, pros::MotorUnits::deg);
+pros::MotorGroup left_motors({-2, -3, 4}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
+pros::MotorGroup right_motors({5, 6, -7}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
 pros::Imu inertial(21);
 
-pros::Motor hopper(-11, pros::MotorGear::blue, pros::MotorUnits::deg);
-pros::Motor btmStage(20, pros::MotorGear::blue, pros::MotorUnits::deg);
-pros::Motor topStage(-12, pros::MotorGear::blue, pros::MotorUnits::deg);
+pros::Motor firstStage(10);
+pros::Motor secondStage(9);
+pros::Motor thirdStage(-1);
 
-pros::Distance right_distance(5);
-pros::Distance left_distance(7);
-pros::Distance back_distance(18);
+pros::Distance btmStorageDetector(8);
 
-pros::adi::Pneumatics matchload_unloader('H', false);
-pros::adi::Pneumatics storage_unstore('A', false);
+pros::adi::Pneumatics middleGoalFlap('A', false);
 
 pros::Controller primary(pros::E_CONTROLLER_MASTER);
 
@@ -58,16 +56,16 @@ lemlib::ControllerSettings angular_controller(
 lemlib::Chassis chassis(drivetrain, lateral_controller, angular_controller, sensors);
 
 Intake intake(
-    &topStage,
-    &btmStage,
-    &hopper,
-    {},
+    &firstStage,
+    &secondStage,
+    &thirdStage,
+    &btmStorageDetector,
+    &middleGoalFlap,
+    85.0f,
     &primary,
     pros::E_CONTROLLER_DIGITAL_L2,
     pros::E_CONTROLLER_DIGITAL_L1,
     pros::E_CONTROLLER_DIGITAL_R2,
-    pros::E_CONTROLLER_DIGITAL_R1,
-    150.0f,
-    20.0f);
+    pros::E_CONTROLLER_DIGITAL_R1);
 
 Screen screen;
