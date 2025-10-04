@@ -164,7 +164,7 @@ class Intake
         {
           middle_stage_->set_encoder_units_all(pros::MotorEncoderUnits::deg);
 
-          middle_stage_->move_relative(200, 80);
+          middle_stage_->move_relative(160, 100);
         }
 
         break;

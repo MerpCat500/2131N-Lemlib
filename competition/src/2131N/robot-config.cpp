@@ -10,11 +10,12 @@ pros::Imu inertial(21);
 
 pros::Motor firstStage(10);
 pros::Motor secondStage(9);
-pros::Motor thirdStage(-1);
+pros::Motor thirdStage(1);
 
 pros::Distance btmStorageDetector(8);
 
 pros::adi::Pneumatics middleGoalFlap('A', false);
+pros::adi::Pneumatics matchload_unloader('B', false);
 
 pros::Controller primary(pros::E_CONTROLLER_MASTER);
 
