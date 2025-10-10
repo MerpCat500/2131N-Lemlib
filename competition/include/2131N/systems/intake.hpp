@@ -44,11 +44,14 @@ class Intake
   pros::controller_digital_e_t
       score_middle_button;  // Unstore Button (Spins Storage out to remove stored balls)
 
+  // pros::controller_digital_e_t just_the_fucking_bottom_button_;
+
   pros::Task update_thread_;
 
   enum class states
   {
     STOPPED,
+    // JUST_THE_FUCKING_BOTTOM,
     OUTTAKE,
     STORING,
     SCORING,
@@ -70,7 +73,9 @@ class Intake
       pros::controller_digital_e_t intake_button,
       pros::controller_digital_e_t outtake_button,
       pros::controller_digital_e_t score_top_button,
-      pros::controller_digital_e_t score_middle_button)
+      pros::controller_digital_e_t score_middle_button
+      // pros::controller_digital_e_t just_the_fucking_bottom_button_
+      )
       : bottom_stage_(bottom_stage),
         middle_stage_(middle_stage),
         top_stage_(top_stage),
@@ -103,9 +108,16 @@ class Intake
       else { setState(states::STORING); }
     }
     else if (primary_->get_digital_new_press(outtake_button_)) { setState(states::OUTTAKE); }
+    // else if (primary_->get_digital_new_press(just_the_fucking_bottom_button_))
+    // {
+    //   std::cout << "JUST THE FUCKING BOTTOM" << std::endl;
+    //   setState(states::JUST_THE_FUCKING_BOTTOM);
+    // }
     else if (
         primary_->get_digital_new_release(intake_button_) ||
-        primary_->get_digital_new_release(outtake_button_))
+        primary_->get_digital_new_release(outtake_button_)
+        //|| primary_->get_digital_new_release(just_the_fucking_bottom_button_)
+    )
     {
       setState(states::STOPPED);
     }
@@ -160,12 +172,13 @@ class Intake
         bottom_stage_->move_voltage(12000);
         top_stage_->move_voltage(-3000);
 
-        if (ball_detector.getChanged() && ball_detector.getValue())
+        if (ball_detector.getValue())
         {
           middle_stage_->set_encoder_units_all(pros::MotorEncoderUnits::deg);
 
-          middle_stage_->move_relative(160, 100);
+          middle_stage_->move_velocity(100);
         }
+        else { middle_stage_->brake(); }
 
         break;
       case states::SCORE_MIDDLE:
@@ -188,7 +201,6 @@ class Intake
         top_stage_->move_voltage(12000);
         break;
       case states::STOPPED:
-
         bottom_stage_->set_brake_mode_all(pros::MotorBrake::coast);
         middle_stage_->set_brake_mode_all(pros::MotorBrake::hold);
         top_stage_->set_brake_mode_all(pros::MotorBrake::coast);
@@ -197,6 +209,9 @@ class Intake
         middle_stage_->brake();
         top_stage_->brake();
         break;
+        // case states::JUST_THE_FUCKING_BOTTOM:
+        //   bottom_stage_->move_voltage(12000);
+        //   break;
     }
   }
 };

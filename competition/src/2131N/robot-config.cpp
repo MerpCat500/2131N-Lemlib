@@ -2,6 +2,7 @@
 
 #include "lemlib/chassis/chassis.hpp"
 #include "pros/distance.hpp"
+#include "pros/misc.h"
 #include "pros/motor_group.hpp"
 
 pros::MotorGroup left_motors({-2, -3, 4}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
