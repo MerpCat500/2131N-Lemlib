@@ -11,6 +11,9 @@
 
 #pragma once
 
+#include <iostream>
+#include <ostream>
+
 #include "2131N/utils/change_detector.hpp"
 #include "pros/abstract_motor.hpp"
 #include "pros/adi.hpp"
@@ -170,13 +173,17 @@ class Intake
       case states::STORING:
 
         bottom_stage_->move_voltage(12000);
-        top_stage_->move_voltage(-3000);
+        top_stage_->move_voltage(-1000);
 
         if (ball_detector.getValue())
         {
           middle_stage_->set_encoder_units_all(pros::MotorEncoderUnits::deg);
-
-          middle_stage_->move_velocity(100);
+          middle_stage_->move_velocity(80);
+          if (std::abs(middle_stage_->get_torque()) > 0.9)
+          {
+            middle_stage_->set_brake_mode_all(pros::MotorBrake::coast);
+            middle_stage_->brake();
+          }
         }
         else { middle_stage_->brake(); }
 
