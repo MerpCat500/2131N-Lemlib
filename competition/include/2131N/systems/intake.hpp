@@ -51,6 +51,10 @@ class Intake
 
   pros::Task update_thread_;
 
+  bool score_mode_ = false;
+  bool score_middle_ = false;
+
+ public:
   enum class states
   {
     STOPPED,
@@ -60,9 +64,6 @@ class Intake
     SCORING,
     SCORE_MIDDLE,
   } state;
-
-  bool score_mode_ = false;
-  bool score_middle_ = false;
 
  public:
   Intake(
@@ -161,6 +162,7 @@ class Intake
   }
 
   void setState(states new_state) { state = new_state; }
+  void setMiddle(bool v) { middle_stage_gate_->set_value(v); }
 
  private:
   void update()
@@ -178,7 +180,7 @@ class Intake
         if (ball_detector.getValue())
         {
           middle_stage_->set_encoder_units_all(pros::MotorEncoderUnits::deg);
-          middle_stage_->move_velocity(80);
+          middle_stage_->move_velocity(110);
           if (std::abs(middle_stage_->get_torque()) > 0.9)
           {
             middle_stage_->set_brake_mode_all(pros::MotorBrake::coast);
@@ -192,7 +194,7 @@ class Intake
 
         // TODO: Add reversing behavior
         bottom_stage_->move_voltage(12000);
-        middle_stage_->move_voltage(12000);
+        middle_stage_->move_voltage(8000);
         top_stage_->move_voltage(-6000);
         break;
       case states::OUTTAKE:

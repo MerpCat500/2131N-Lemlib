@@ -30,7 +30,7 @@ void initialize()
        }},
   });
 
-  screen.initialize(2, true);
+  screen.initialize(1, true);
 }
 
 /**
@@ -57,6 +57,8 @@ void autonomous() { screen.getCurrentAutoCallback()(screen.getRedTeam()); }
  */
 void opcontrol()
 {
+  intake.setState(Intake::states::STOPPED);
+
   while (true)
   {
     // Chassis tank control
