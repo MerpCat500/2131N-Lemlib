@@ -61,17 +61,26 @@ void opcontrol()
 
   while (true)
   {
-    // Chassis tank control
-    chassis.tank(
-        primary.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y),
-        primary.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y),
-        true);
-
     intake.teleOp();
 
     if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
     {
       matchload_unloader.toggle();
+    }
+
+    if (primary.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
+    {
+      chassis.tank(
+          primary.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) * 0.5,
+          primary.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) * 0.5,
+          true);
+    }
+    else
+    {
+      chassis.tank(
+          primary.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y),
+          primary.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y),
+          true);
     }
 
     pros::delay(10);
