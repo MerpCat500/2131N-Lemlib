@@ -11,9 +11,6 @@
 
 #pragma once
 
-#include <iostream>
-#include <ostream>
-
 #include "2131N/utils/change_detector.hpp"
 #include "pros/abstract_motor.hpp"
 #include "pros/adi.hpp"
