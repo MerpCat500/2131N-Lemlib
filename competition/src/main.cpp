@@ -20,7 +20,7 @@ void initialize()
 
   });
 
-  screen.initialize(3, true);
+  screen.initialize(2, true);
 
   screen.addTelemetries({
       {"Battery", []() { return std::to_string(pros::battery::get_capacity()); }},

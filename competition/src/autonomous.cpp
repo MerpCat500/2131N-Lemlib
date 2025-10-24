@@ -77,7 +77,7 @@ void rightSideAWP(bool is_red_team)
 {
   intake.setState(Intake::states::STORING);
 
-  chassis.setPose({-(48 + 7.25 + 1.5), 24, -90}, false);
+  chassis.setPose({-(48 + 7.25 + 1.5), 24, 90}, false);
 
   // ? De-score loader
   matchload_unloader.extend();
@@ -89,7 +89,7 @@ void rightSideAWP(bool is_red_team)
   // ! Attempt to score
   auto after_loader = chassis.getPose();
   chassis.moveToPoint(
-      after_loader.x, after_loader.y + 36.0, 1800, {.forwards = false, .maxSpeed = 80});
+      after_loader.x + 0.5, after_loader.y + 36.0, 1800, {.forwards = false, .maxSpeed = 80});
   pros::delay(600);
   intake.setState(Intake::states::SCORING);
   matchload_unloader.retract();
@@ -106,30 +106,20 @@ void rightSideAWP(bool is_red_team)
 
   // * Reset to the goal
   auto left_goal = chassis.getPose();
-  chassis.setPose({-24., 48 - 7.25 + 2.5, left_goal.theta});
+  chassis.setPose({-24., 48 - 5.25 + 2.5, left_goal.theta});
 
   // ? Grab Middle
   intake.setState(Intake::states::SCORING);
-  chassis.moveToPose(-36, 36, -90, 2000, {.lead = 0.9, .minSpeed = 10}, false);
+  chassis.moveToPose(-36, 36, -90, 2000, {.lead = 0.5, .minSpeed = 10}, false);
   intake.setState(Intake::states::STORING);
   chassis.moveToPose(-48, 50, -10, 1800, {.lead = 0.4, .maxSpeed = 50}, false);
 
   // ! Score Middle
   chassis.turnToHeading(-45, 1000, {}, false);
-  chassis.moveToPose(-61, 60, -45, 1800, {.lead = 0.2}, false);
-  intake.setState(Intake::states::SCORE_MIDDLE);
-  intake.setMiddle(true);
+  chassis.moveToPose(-61, 59, -45, 1800, {.lead = 0.2}, false);
+  intake.setState(Intake::states::OUTTAKE);
   pros::delay(1200);
 
-  // * Retreat and wack
-  intake.setState(Intake::states::OUTTAKE);
-  chassis.moveToPoint(-24, 24, 2000, {.forwards = false});
-  pros::delay(400);
-  intake.setMiddle(false);
-  chassis.waitUntilDone();
-
-  chassis.turnToHeading(180, 2000);
-  chassis.moveToPoint(-24, 48, 2000, {.forwards = false}, false);
 }
 
 void skills(bool is_red_team)
