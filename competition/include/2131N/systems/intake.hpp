@@ -126,6 +126,8 @@ class Intake
     if (primary_->get_digital_new_press(score_top_button_))
     {
       score_middle_ = false;
+      middle_stage_gate_->set_value(score_middle_);
+
       score_mode_ = !score_mode_;
       if (primary_->get_digital(intake_button_))
       {
