@@ -20,6 +20,8 @@ void initialize()
 
   });
 
+  screen.initialize(3, true);
+
   screen.addTelemetries({
       {"Battery", []() { return std::to_string(pros::battery::get_capacity()); }},
       {"Position",
@@ -29,8 +31,6 @@ void initialize()
                 "\n  Theta: " + std::to_string(position.theta);
        }},
   });
-
-  screen.initialize(1, true);
 }
 
 /**
