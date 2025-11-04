@@ -7,6 +7,7 @@
 
 extern pros::Controller primary;
 extern pros::adi::Pneumatics matchload_unloader;
+extern pros::adi::Pneumatics goal_descore;
 
 extern pros::Distance right_distance;
 extern pros::Distance left_distance;

@@ -17,6 +17,7 @@ pros::Distance btmStorageDetector(8);
 
 pros::adi::Pneumatics middleGoalFlap('A', false);
 pros::adi::Pneumatics matchload_unloader('B', false);
+pros::adi::Pneumatics goal_descore('C', false);
 
 pros::Controller primary(pros::E_CONTROLLER_MASTER);
 

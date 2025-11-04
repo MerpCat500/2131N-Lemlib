@@ -3,6 +3,7 @@
 #include "2131N/robot-config.hpp"
 #include "autonomous.hpp"
 #include "pros/misc.h"
+#include "pros/rtos.hpp"
 
 /**
  * @brief Runs before everything else.
@@ -66,6 +67,17 @@ void opcontrol()
     if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
     {
       matchload_unloader.toggle();
+    }
+
+    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
+    {
+      pros::Task(
+          []() {
+            goal_descore.extend();
+            pros::delay(200);
+            goal_descore.retract();
+          },
+          "Goal Descore Task");
     }
 
     if (primary.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
