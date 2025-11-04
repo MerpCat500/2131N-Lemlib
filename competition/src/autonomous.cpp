@@ -6,7 +6,7 @@
 
 #include "2131N/robot-config.hpp"
 #include "2131N/systems/intake.hpp"
-#include "lemlib/chassis/chassis.hpp"
+#include "lemlib/pose.hpp"
 
 void debug(bool is_red_team)
 {
@@ -119,7 +119,6 @@ void rightSideAWP(bool is_red_team)
   chassis.moveToPose(-61, 59, -45, 1800, {.lead = 0.2}, false);
   intake.setState(Intake::states::OUTTAKE);
   pros::delay(1200);
-
 }
 
 void skills(bool is_red_team)
@@ -179,4 +178,9 @@ void skills(bool is_red_team)
   matchload_unloader.extend();
   chassis.waitUntilDone();
   matchload_unloader.retract();
+}
+
+void skills2(bool is_red_team)
+{
+  chassis.moveToRelativePoint(Chassis::fromPolar(10, 45), 2000, {}, false);
 }

@@ -4,6 +4,7 @@
 #include "pros/distance.hpp"
 #include "pros/misc.h"
 #include "pros/motor_group.hpp"
+#include "systems/chassis.hpp"
 
 pros::MotorGroup left_motors({-2, -3, 4}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
 pros::MotorGroup right_motors({5, 6, -7}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
@@ -56,7 +57,7 @@ lemlib::ControllerSettings angular_controller(
     0        // maximum acceleration (slew)
 );
 
-lemlib::Chassis chassis(drivetrain, lateral_controller, angular_controller, sensors);
+Chassis chassis({drivetrain, lateral_controller, angular_controller, sensors});
 
 Intake intake(
     &firstStage,
