@@ -15,13 +15,14 @@ void initialize()
 
   screen.addAutos({
       {"Debug", "Debug Auto, DO NOT RUN AT COMP", debug},
-      {"Left Side", "Left Side Half Autonomous Win Point", leftSideAWP},
-      {"Right Side", "Right Side Half Autonomous Win Point", rightSideAWP},
+      {"Left Side", "Left Side Half Autonomous Win Point", leftSide},
+      {"Right Side", "Right Side Half Autonomous Win Point", rightSide},
+      {"Left Side AWP", "Left Side Autonomous Win Point", leftSideAwp},
       {"Skills", "Skills Autonomous", skills},
 
   });
 
-  screen.initialize(2, true);
+  screen.initialize(3, true);
 
   screen.addTelemetries({
       {"Battery", []() { return std::to_string(pros::battery::get_capacity()); }},

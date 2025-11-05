@@ -2,6 +2,7 @@
 
 void debug(bool is_red_team);
 
-void leftSideAWP(bool is_red_team);
-void rightSideAWP(bool is_red_team);
+void leftSideAwp(bool is_red_team);
+void leftSide(bool is_red_team);
+void rightSide(bool is_red_team);
 void skills(bool is_red_team);

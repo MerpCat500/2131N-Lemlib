@@ -33,8 +33,7 @@ class Chassis : public lemlib::Chassis
       lemlib::MoveToPointParams p = {},
       bool async = true);
 
-  void moveToRelativePoint(
-      float x, float y, int timeout, lemlib::MoveToPointParams p, bool async);
+  void moveToRelativePoint(float x, float y, int timeout, lemlib::MoveToPointParams p, bool async);
 
   void turnToRelativeHeading(
       float deltaHeading, int timeout, lemlib::TurnToHeadingParams p = {}, bool async = true);

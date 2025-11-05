@@ -6,7 +6,8 @@ void Chassis::moveToRelativePose(
     const lemlib::Pose& deltaPose, int timeout, lemlib::MoveToPoseParams p, bool async)
 {
   lemlib::Pose targetPose = this->getPose() + deltaPose;
-  this->moveToPose(targetPose.x, targetPose.y, targetPose.theta, timeout, p, async);
+  this->moveToPose(
+      targetPose.x, targetPose.y, targetPose.theta + deltaPose.theta, timeout, p, async);
 }
 
 void Chassis::moveToPointAsPose(
@@ -18,6 +19,7 @@ void Chassis::moveToPointAsPose(
 void Chassis::moveToRelativePoint(
     const lemlib::Pose& deltaPoint, int timeout, lemlib::MoveToPointParams p, bool async)
 {
+  this->waitUntilDone();
   lemlib::Pose targetPoint = this->getPose() + deltaPoint;
   this->lemlib::Chassis::moveToPoint(targetPoint.x, targetPoint.y, timeout, p, async);
 }
@@ -25,6 +27,7 @@ void Chassis::moveToRelativePoint(
 void Chassis::moveToRelativePoint(
     float x, float y, int timeout, lemlib::MoveToPointParams p, bool async)
 {
+  this->waitUntilDone();
   lemlib::Pose targetPoint = this->getPose() + lemlib::Pose(x, y, 0);
   this->lemlib::Chassis::moveToPoint(targetPoint.x, targetPoint.y, timeout, p, async);
 }
@@ -32,6 +35,8 @@ void Chassis::moveToRelativePoint(
 void Chassis::turnToRelativeHeading(
     float deltaHeading, int timeout, lemlib::TurnToHeadingParams p, bool async)
 {
+  this->waitUntilDone();
+
   this->turnToHeading(this->getPose().theta + deltaHeading, timeout, p, async);
 }
 
