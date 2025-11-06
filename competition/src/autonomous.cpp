@@ -225,5 +225,55 @@ void skills(bool is_red_team)
 
 void skills2(bool is_red_team)
 {
-  chassis.moveToRelativePoint(Chassis::fromPolar(24, 45), 2000, {}, false);
+  intake.setState(Intake::states::STORE_TOP);
+
+  chassis.setPose({144 - (48 + 7.25 + 1.5), 24, 90}, false);
+
+  // ? De-score loader
+  matchload_unloader.extend();
+  pros::delay(200);  // Wait for the loader to extend before moving
+  chassis.moveToPoint(144 - 23, 24.0, 2000, {}, false);
+  chassis.turnToHeading(180, 1000, {}, false);
+  chassis.moveToPoint(144 - 23, -100.0, 2800, {.maxSpeed = 40, .minSpeed = 10}, false);
+
+  // ! Attempt to score
+  auto after_loader = chassis.getPose();
+  chassis.moveToPoint(
+      after_loader.x - 0.75, after_loader.y + 36.0, 5000, {.forwards = false, .maxSpeed = 80});
+  pros::delay(600);
+  intake.setState(Intake::states::SCORING);
+  pros::delay(3000);
+  matchload_unloader.retract();
+  chassis.cancelMotion();
+
+  // * Reset to the goal
+  auto right_goal = chassis.getPose();
+  chassis.setPose({144 - 24, 48 - 7.5, right_goal.theta});
+
+  // ? Leave Goal
+  intake.setState(Intake::states::STORING);
+  chassis.moveToRelativePoint(0, -4, 1000, {.minSpeed = 40}, false);
+  chassis.swingToHeading(
+      0,
+      lemlib::DriveSide::LEFT,
+      1500,
+      {.direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE, .minSpeed = 10},
+      false);
+  chassis.moveToPoint(144 - 12, 96, 2000, {.minSpeed = 30}, false);
+
+  // ! Unload Loader 2
+  matchload_unloader.extend();
+  chassis.moveToPose(120, 125, 0, 2000, {.lead = 0.4, .minSpeed = 10}, false);
+  intake.setState(Intake::states::STORE_TOP);
+  chassis.moveToRelativePoint(0, 100, 2800, {.maxSpeed = 40, .minSpeed = 10}, false);
+
+  // * Score Loader 2
+  chassis.moveToRelativePoint(0, -48, 2000, {.forwards = false, .maxSpeed = 70}, true);
+  pros::delay(600);
+  intake.setState(Intake::states::SCORING);
+  pros::delay(3000);
+  matchload_unloader.retract();
+  chassis.cancelMotion();
+
+  
 }
