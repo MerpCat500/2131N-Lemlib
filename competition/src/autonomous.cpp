@@ -19,16 +19,16 @@ void leftSideAwp(bool is_red_team)
   matchload_unloader.extend();
   pros::delay(200);  // Wait for the loader to extend before moving
   chassis.moveToPoint(24.5, 24.0, 2000, {}, false);
-  chassis.turnToHeading(-180.0, 1000, {}, false);
-  chassis.moveToPoint(24.5, -100.0, 1100, {.maxSpeed = 50, .minSpeed = 20}, false);
+  chassis.turnToHeading(-180.0, 1000, {.minSpeed = 1}, false);
+  chassis.moveToPoint(24.5, -100.0, 1150, {.maxSpeed = 50, .minSpeed = 20}, false);
 
   // ! Attempt to score
   auto after_loader = chassis.getPose();
   chassis.moveToPoint(
-      after_loader.x, after_loader.y + 36.0, 1800, {.forwards = false, .maxSpeed = 70});
+      after_loader.x, after_loader.y + 36.0, 1800, {.forwards = false, .maxSpeed = 68});
   pros::delay(1000);
   intake.setState(Intake::states::SCORING);
-  pros::delay(2000);
+  pros::delay(1100);
   matchload_unloader.retract();
   chassis.cancelMotion();
 
@@ -37,25 +37,34 @@ void leftSideAwp(bool is_red_team)
   chassis.setPose({24., 48 - 7.25 + 3.5, left_goal.theta});
 
   // ? Grab Middle
-  chassis.moveToRelativePoint(0., -8, 2000, {.minSpeed = 40}, false);
   intake.setState(Intake::states::STORING);
-  chassis.moveToPose(48, 48, 10, 1800, {.lead = 0.4, .maxSpeed = 60}, false);
+  chassis.moveToRelativePoint(0., -8, 2000, {.minSpeed = 40}, false);
+  chassis.moveToPose(48, 48, 10, 700, {.lead = 0.6}, false);
+  chassis.moveToPose(48, 48, 10, 1000, {.lead = 0.6, .maxSpeed = 40}, false);
 
   // ! Score Middle
   chassis.turnToHeading(45, 1000, {}, false);
-  chassis.moveToPose(61, 60, 45, 1800, {.lead = 0.2, .minSpeed = 10}, false);
-  intake.setState(Intake::states::SCORE_MIDDLE);
+  chassis.moveToPose(60, 60, 45, 1800, {.lead = 0.2, .minSpeed = 10}, false);
+  pros::delay(200);
   intake.setMiddle(true);
-  pros::delay(1100);
+  intake.setState(Intake::states::SCORE_MIDDLE);
+  pros::delay(1000);
   intake.setState(Intake::states::STOPPED);
 
   // * Go to middle blocks
   chassis.swingToHeading(135, lemlib::DriveSide::LEFT, 1000, {.minSpeed = 30}, false);
   intake.setMiddle(false);
   intake.setState(Intake::states::STORING);
-  chassis.moveToRelativePose({48, -12, -45}, 3000, {.lead = 0.5, .minSpeed = 40}, false);
-  matchload_unloader.extend();
-  chassis.moveToRelativePose({24, -48, 90}, 2000, {.lead = 0.5}, false);
+  auto pose = chassis.getPose();
+  chassis.moveToRelativePose({48, -12, -45}, 700, {.lead = 0.4}, false);
+  chassis.moveToPose(
+      pose.x + 48, pose.y - 13, 90, 2000, {.lead = 0.4, .maxSpeed = 40, .minSpeed = 1}, false);
+
+  // ! Score Middle Bottom
+  chassis.turnToHeading(-41, 1500, {.minSpeed = 1}, false);
+  chassis.moveToRelativePoint(Chassis::fromPolar(17.25, -41), 2000, {}, true);
+  pros::delay(800);
+  intake.setState(Intake::states::OUTTAKE);
 }
 
 void leftSide(bool is_red_team)
