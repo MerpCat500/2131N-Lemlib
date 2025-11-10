@@ -218,13 +218,11 @@ class Intake
         middle_stage_->brake();
         top_stage_->brake();
         break;
-        // case states::JUST_THE_FUCKING_BOTTOM:
-        //   bottom_stage_->move_voltage(12000);
-        //   break;
+
       case states::STORE_TOP:
         bottom_stage_->move_voltage(12000);
         middle_stage_->move_voltage(12000);
-        top_stage_->move_voltage(-8000);
+        top_stage_->move_voltage(-1500);
         break;
     }
   }
