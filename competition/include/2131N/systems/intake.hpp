@@ -50,6 +50,10 @@ class Intake
 
   bool score_mode_ = false;
   bool score_middle_ = false;
+  bool anti_jam_ = false;
+  size_t jam_loop_ = 0;
+
+  double intake_multiplier_ = 1.0;
 
  public:
   enum class states
@@ -163,6 +167,12 @@ class Intake
 
   void setState(states new_state) { state = new_state; }
   void setMiddle(bool v) { middle_stage_gate_->set_value(v); }
+  void setIntakeMultiplier(double scale) { this->intake_multiplier_ = scale; }
+  void antiJam(bool anti_jam)
+  {
+    anti_jam_ = anti_jam;
+    jam_loop_ = 0;
+  }
 
  private:
   void update()
@@ -170,60 +180,69 @@ class Intake
     ball_detected_ = (bottom_detector_->get() < detection_range_);
     ball_detector.checkValue(ball_detected_);
 
-    switch (state)
+    if (this->anti_jam_)
     {
-      case states::STORING:
+      jam_loop_++;
+      bottom_stage_->move_voltage(-12000);
+      middle_stage_->move_voltage(-4000);
+      if (jam_loop_ > 10) { this->antiJam(false); }
+    }
+    else
+    {
+      switch (state)
+      {
+        case states::STORING:
 
-        bottom_stage_->move_voltage(12000);
-        top_stage_->move_voltage(-1000);
-
-        if (ball_detector.getValue())
-        {
-          middle_stage_->set_encoder_units_all(pros::MotorEncoderUnits::deg);
-          middle_stage_->move_velocity(110);
-          if (std::abs(middle_stage_->get_torque()) > 0.9)
+          bottom_stage_->move_voltage(12000 * this->intake_multiplier_);
+          top_stage_->move_voltage(-1000 * this->intake_multiplier_);
+          if (ball_detector.getValue())
           {
-            middle_stage_->set_brake_mode_all(pros::MotorBrake::coast);
-            middle_stage_->brake();
+            middle_stage_->set_encoder_units_all(pros::MotorEncoderUnits::deg);
+            middle_stage_->move_velocity(150 * this->intake_multiplier_);
+            if (std::abs(middle_stage_->get_torque()) > 0.9)
+            {
+              middle_stage_->set_brake_mode_all(pros::MotorBrake::coast);
+              middle_stage_->brake();
+            }
           }
-        }
-        else { middle_stage_->brake(); }
+          else { middle_stage_->brake(); }
 
-        break;
-      case states::SCORE_MIDDLE:
+          break;
+        case states::SCORE_MIDDLE:
 
-        // TODO: Add reversing behavior
-        bottom_stage_->move_voltage(12000);
-        middle_stage_->move_voltage(8000);
-        top_stage_->move_voltage(-6000);
-        break;
-      case states::OUTTAKE:
+          // TODO: Add reversing behavior
+          bottom_stage_->move_voltage(12000 * intake_multiplier_);
+          middle_stage_->move_voltage(8000 * intake_multiplier_);
+          top_stage_->move_voltage(-6000 * intake_multiplier_);
+          break;
+        case states::OUTTAKE:
 
-        bottom_stage_->move_voltage(-12000);
-        middle_stage_->move_voltage(-12000);
-        top_stage_->move_voltage(-12000);
-        break;
-      case states::SCORING:
+          bottom_stage_->move_voltage(-12000 * intake_multiplier_);
+          middle_stage_->move_voltage(-12000 * intake_multiplier_);
+          top_stage_->move_voltage(-12000 * intake_multiplier_);
+          break;
+        case states::SCORING:
 
-        bottom_stage_->move_voltage(12000);
-        middle_stage_->move_voltage(12000);
-        top_stage_->move_voltage(12000);
-        break;
-      case states::STOPPED:
-        bottom_stage_->set_brake_mode_all(pros::MotorBrake::coast);
-        middle_stage_->set_brake_mode_all(pros::MotorBrake::hold);
-        top_stage_->set_brake_mode_all(pros::MotorBrake::coast);
+          bottom_stage_->move_voltage(12000 * intake_multiplier_);
+          middle_stage_->move_voltage(12000 * intake_multiplier_);
+          top_stage_->move_voltage(12000 * intake_multiplier_);
+          break;
+        case states::STOPPED:
+          bottom_stage_->set_brake_mode_all(pros::MotorBrake::coast);
+          middle_stage_->set_brake_mode_all(pros::MotorBrake::hold);
+          top_stage_->set_brake_mode_all(pros::MotorBrake::coast);
 
-        bottom_stage_->brake();
-        middle_stage_->brake();
-        top_stage_->brake();
-        break;
+          bottom_stage_->brake();
+          middle_stage_->brake();
+          top_stage_->brake();
+          break;
 
-      case states::STORE_TOP:
-        bottom_stage_->move_voltage(12000);
-        middle_stage_->move_voltage(12000);
-        top_stage_->move_voltage(-1500);
-        break;
+        case states::STORE_TOP:
+          bottom_stage_->move_voltage(12000 * intake_multiplier_);
+          middle_stage_->move_voltage(12000 * intake_multiplier_);
+          top_stage_->move_voltage(-1500 * intake_multiplier_);
+          break;
+      }
     }
   }
 };

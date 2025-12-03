@@ -59,6 +59,9 @@ void autonomous() { screen.getCurrentAutoCallback()(screen.getRedTeam()); }
  */
 void opcontrol()
 {
+  intake.setIntakeMultiplier(1.0);
+  intake.setMiddle(false);
+
   intake.setState(Intake::states::STOPPED);
 
   while (true)
