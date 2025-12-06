@@ -44,8 +44,6 @@ class Intake
   pros::controller_digital_e_t
       score_middle_button;  // Unstore Button (Spins Storage out to remove stored balls)
 
-  // pros::controller_digital_e_t just_the_fucking_bottom_button_;
-
   pros::Task update_thread_;
 
   bool score_mode_ = false;
@@ -59,7 +57,6 @@ class Intake
   enum class states
   {
     STOPPED,
-    // JUST_THE_FUCKING_BOTTOM,
     OUTTAKE,
     STORING,
     SCORING,
@@ -79,9 +76,7 @@ class Intake
       pros::controller_digital_e_t intake_button,
       pros::controller_digital_e_t outtake_button,
       pros::controller_digital_e_t score_top_button,
-      pros::controller_digital_e_t score_middle_button
-      // pros::controller_digital_e_t just_the_fucking_bottom_button_
-      )
+      pros::controller_digital_e_t score_middle_button)
       : bottom_stage_(bottom_stage),
         middle_stage_(middle_stage),
         top_stage_(top_stage),
@@ -114,15 +109,11 @@ class Intake
       else { setState(states::STORING); }
     }
     else if (primary_->get_digital_new_press(outtake_button_)) { setState(states::OUTTAKE); }
-    // else if (primary_->get_digital_new_press(just_the_fucking_bottom_button_))
-    // {
-    //   std::cout << "JUST THE FUCKING BOTTOM" << std::endl;
-    //   setState(states::JUST_THE_FUCKING_BOTTOM);
-    // }
+
     else if (
         primary_->get_digital_new_release(intake_button_) ||
         primary_->get_digital_new_release(outtake_button_)
-        //|| primary_->get_digital_new_release(just_the_fucking_bottom_button_)
+
     )
     {
       setState(states::STOPPED);
@@ -194,7 +185,7 @@ class Intake
         case states::STORING:
 
           bottom_stage_->move_voltage(12000 * this->intake_multiplier_);
-          top_stage_->move_voltage(-1000 * this->intake_multiplier_);
+          top_stage_->move_voltage(-0 * this->intake_multiplier_);
           if (ball_detector.getValue())
           {
             middle_stage_->set_encoder_units_all(pros::MotorEncoderUnits::deg);

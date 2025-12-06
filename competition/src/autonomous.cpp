@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "2131N/robot-config.hpp"
+#include "2131N/systems/chassis.hpp"
 #include "2131N/systems/intake.hpp"
 #include "lemlib/chassis/chassis.hpp"
 #include "lemlib/pose.hpp"
@@ -76,14 +77,14 @@ void leftSide(bool is_red_team)
 {
   intake.setState(Intake::states::STORING);
 
-  chassis.setPose({48 + 7.25 + 1.5, 24, -90}, false);
+  chassis.setPose({48 + 7.25 + 1., 24, -90}, false);
 
   // ? De-score loader
   matchload_unloader.extend();
   pros::delay(200);  // Wait for the loader to extend before moving
-  chassis.moveToPoint(24.5, 24.0, 2000, {}, false);
+  chassis.moveToPoint(24.75, 24.0, 2000, {}, false);
   chassis.turnToHeading(-180.0, 1000, {}, false);
-  chassis.moveToPoint(24.5, -100.0, 1250, {.maxSpeed = 60, .minSpeed = 20}, false);
+  chassis.moveToPoint(24.75, -100.0, 1025, {.maxSpeed = 60, .minSpeed = 20}, false);
 
   // ! Attempt to score
   auto after_loader = chassis.getPose();
@@ -95,12 +96,6 @@ void leftSide(bool is_red_team)
   matchload_unloader.retract();
   chassis.cancelMotion();
 
-  auto ram_goal = chassis.getPose();
-  intake.setState(Intake::states::STOPPED);
-  chassis.moveToPoint(ram_goal.x, ram_goal.y - 10, 1200, {.minSpeed = 1}, false);
-  chassis.moveToPoint(ram_goal.x, ram_goal.y + 2, 1200, {.forwards = false, .minSpeed = 60}, false);
-  intake.setState(Intake::states::STOPPED);
-
   // * Reset to the goal
   auto left_goal = chassis.getPose();
   chassis.setPose({24., 48 - 7.25 + 2.5, left_goal.theta});
@@ -109,33 +104,36 @@ void leftSide(bool is_red_team)
   intake.setState(Intake::states::SCORING);
   chassis.moveToPose(36, 36, 90, 2000, {.lead = 0.9, .minSpeed = 10}, false);
   intake.setState(Intake::states::STORING);
-  chassis.moveToPose(48, 50, 10, 1800, {.lead = 0.4, .maxSpeed = 50}, false);
+  chassis.turnToHeading(46, 1000, {.minSpeed = 1}, false);
+  chassis.moveToRelativePoint(Chassis::fromPolar(14 * sqrt(2), 46), 2200, {.maxSpeed = 30}, false);
 
   // ! Score Middle
   chassis.turnToHeading(45, 1000, {}, false);
-  chassis.moveToPose(60.5, 61.5, 45, 1800, {.lead = 0.2}, false);
+  chassis.moveToRelativePoint(Chassis::fromPolar(21.5, 45), 1800, {.minSpeed = 60}, false);
+
   intake.setState(Intake::states::SCORE_MIDDLE);
   intake.setMiddle(true);
   pros::delay(1400);
 
-  // * Retreat and wack
+  // * Retreat
   chassis.moveToRelativePoint(
-      Chassis::fromPolar(-5, 45), 2000, {.forwards = false, .minSpeed = 10}, false);
+      Chassis::fromPolar(-45, 45), 2000, {.forwards = false, .minSpeed = 10}, false);
   intake.setMiddle(false);
+  chassis.turnToHeading(180, 2000, {.minSpeed = 1}, false);
 }
 
 void rightSide(bool is_red_team)
 {
   intake.setState(Intake::states::STORING);
 
-  chassis.setPose({-(48 + 7.25 + 1.5), 24, 90}, false);
+  chassis.setPose({-(48 + 7.25 + 1.), 24, 90}, false);
 
   // ? De-score loader
   matchload_unloader.extend();
   pros::delay(200);  // Wait for the loader to extend before moving
-  chassis.moveToPoint(-25.5, 24.0, 2000, {}, false);
+  chassis.moveToPoint(-24.5, 24.0, 2000, {}, false);
   chassis.turnToHeading(179.0, 1000, {.minSpeed = 1}, false);
-  chassis.moveToPoint(-25.5, -100.0, 1000, {.maxSpeed = 50, .minSpeed = 20}, false);
+  chassis.moveToPoint(-24.5, -100.0, 1050, {.maxSpeed = 50, .minSpeed = 20}, false);
 
   // ! Attempt to score
   auto after_loader = chassis.getPose();
@@ -147,20 +145,26 @@ void rightSide(bool is_red_team)
   matchload_unloader.retract();
   chassis.cancelMotion();
 
-  auto ram_goal = chassis.getPose();
-  intake.setState(Intake::states::STOPPED);
-  chassis.moveToPoint(ram_goal.x, ram_goal.y - 10, 1200, {.minSpeed = 1}, false);
-  chassis.moveToPoint(ram_goal.x, ram_goal.y + 2, 1200, {.forwards = false, .minSpeed = 70}, false);
-  intake.setState(Intake::states::SCORING);
-  pros::delay(800);
+  // * Reset to the goal
+  auto left_goal = chassis.getPose();
+  chassis.setPose({-20., 48 - 7.25 + 3, left_goal.theta});
 
-  // * Middle Goal
+  // ? Grab Middle
+  intake.setState(Intake::states::SCORING);
+  chassis.moveToPose(-36, 36, -90, 2000, {.lead = 0.8, .minSpeed = 10}, false);
   intake.setState(Intake::states::STORING);
-  chassis.moveToRelativePoint({0, -10, 0}, 2000, {.minSpeed = 50}, false);
-  chassis.moveToRelativePose({-24, 10, 135}, 2000, {.lead = 0.2}, false);
-  chassis.moveToRelativePoint(Chassis::fromPolar(17.5, -44), 2000, {}, false);
+  chassis.turnToHeading(-44, 1000, {.minSpeed = 1}, false);
+  chassis.moveToRelativePoint(Chassis::fromPolar(16 * sqrt(2), -44), 2200, {.maxSpeed = 30}, false);
+
+  //! Score Middle
+  chassis.turnToHeading(-43.5, 1000, {}, false);
+  chassis.moveToRelativePoint(Chassis::fromPolar(19.0, -43.5), 1800, {.maxSpeed = 80}, false);
   intake.setState(Intake::states::OUTTAKE);
-  pros::delay(1200);
+
+  chassis.moveToRelativePoint(Chassis::fromPolar(-4, -43.5), 1800, {.maxSpeed = 127}, false);
+  chassis.moveToRelativePoint(Chassis::fromPolar(4, -43.5), 1800, {.maxSpeed = 80}, false);
+
+  pros::delay(1400);
 
   // Retreat
   chassis.moveToRelativePoint(
@@ -168,13 +172,15 @@ void rightSide(bool is_red_team)
       2000,
       {.forwards = false},
       false);
+
+  chassis.turnToHeading(180, 2000, {.minSpeed = 1}, false);
 }
 
 void skills(bool is_red_team)
 {
   intake.setState(Intake::states::STORE_TOP);
 
-  chassis.setPose({144 - (48 + 7.25 + 1.5), 24, 90}, false);
+  chassis.setPose({144 - (48 + 7.25 + 1.), 24, 90}, false);
 
   // ? De-score loader
   matchload_unloader.extend();
@@ -185,11 +191,13 @@ void skills(bool is_red_team)
   chassis.moveToPoint(144 - 23.5, 7.0, 1000, {.maxSpeed = 40, .minSpeed = 10}, false);
   chassis.moveToPose(144 - 23.5, -10, 175, 400);
   chassis.moveToPoint(144 - 23, -10.0, 600, {.maxSpeed = 40, .minSpeed = 10}, false);
+
   // ! Attempt to score
   auto after_loader = chassis.getPose();
   chassis.moveToPoint(
       after_loader.x - 0.75, after_loader.y + 36.0, 5000, {.forwards = false, .maxSpeed = 70});
   pros::delay(675);
+  intake.antiJam(true);
   intake.setState(Intake::states::SCORING);
   pros::delay(5000);
   matchload_unloader.retract();
@@ -199,7 +207,7 @@ void skills(bool is_red_team)
   auto right_goal = chassis.getPose();
   chassis.setPose({144 - 24 + 1.5, 48 + 7.5, right_goal.theta});
 
-  // !Go to loader 2
+  // ! Go to loader 2
   intake.setState(Intake::states::OUTTAKE);
   chassis.moveToPose(96, 36, -90, 2000, {.lead = (0.70710678118), .minSpeed = 40}, false);
   intake.setState(Intake::states::STORE_TOP);
@@ -211,25 +219,36 @@ void skills(bool is_red_team)
   chassis.moveToPoint(
       after_loader2.x, after_loader2.y + 36.0, 5000, {.forwards = false, .maxSpeed = 70});
   pros::delay(675);
+  intake.antiJam(true);
+  intake.setIntakeMultiplier(1.0);
   intake.setState(Intake::states::SCORING);
-  pros::delay(5000);
+  pros::delay(1000);
+  intake.setIntakeMultiplier(0.8);
+  pros::delay(4000);
   matchload_unloader.retract();
-  chassis.cancelMotion();
+  pros::delay(800);
 
   // * Reset to the goal
   auto left_goal = chassis.getPose();
   chassis.setPose({24, 48 + 7.5, left_goal.theta});
 
   // ! PARK
-  chassis.moveToPose(37, 26, 105, 2000, {.lead = 0.3, .minSpeed = 80}, false);
+  chassis.moveToRelativePoint(0, -5, 2000, {.minSpeed = 30}, false);
+  chassis.moveToPoint(36, 18, 2000, {}, false);
+  chassis.turnToHeading(100, 1000);
+  chassis.moveToRelativePoint(Chassis::fromPolar(58, 100), 2000, {.minSpeed = 60}, true);
+  pros::delay(800);
   intake.setState(Intake::states::OUTTAKE);
   intake.setMiddle(true);
-  chassis.moveToPose(104, 11, 120, 2000, {.minSpeed = 80});
-  pros::delay(200);
-  chassis.moveToPoint(104, 11, 2000, {});
-  matchload_unloader.extend();
-  chassis.waitUntilDone();
-  matchload_unloader.retract();
+  //   chassis.moveToPose(48, 20, 90, 2000, {.lead = 0.7, .minSpeed = 80}, false);
+  //   intake.setState(Intake::states::OUTTAKE);
+  //   intake.setMiddle(true);
+  //   chassis.moveToPose(104, 11, 120, 2000, {.minSpeed = 80});
+  //   pros::delay(400);
+  //   chassis.moveToPoint(104, 11, 2000, {});
+  //   matchload_unloader.extend();
+  //   chassis.waitUntilDone();
+  //   matchload_unloader.retract();
 }
 
 void skills2(bool is_red_team)

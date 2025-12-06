@@ -22,7 +22,7 @@ void initialize()
        {"Skills", "Skills Autonomous", skills},
        {"Skills Two", "A Higher Scoring Auto... maybe :/", skills2}});
 
-  screen.initialize(1, true);
+  screen.initialize(5, true);
 
   screen.addTelemetries({
       {"Battery", []() { return std::to_string(pros::battery::get_capacity()); }},
@@ -75,13 +75,29 @@ void opcontrol()
 
     if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
-      pros::Task(
-          []() {
-            goal_descore.extend();
-            pros::delay(200);
-            goal_descore.retract();
-          },
-          "Goal Descore Task");
+      if (goal_descore_right.is_extended())
+      {
+        goal_descore_left.retract();
+        goal_descore_right.retract();
+      }
+      else
+      {
+        goal_descore_left.retract();
+        goal_descore_right.extend();
+      }
+    }
+    else if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
+    {
+      if (goal_descore_left.is_extended())
+      {
+        goal_descore_left.retract();
+        goal_descore_right.retract();
+      }
+      else
+      {
+        goal_descore_left.extend();
+        goal_descore_right.retract();
+      }
     }
 
     if (primary.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
