@@ -278,78 +278,120 @@ void rightSide(bool is_red_team)
 
 void skills(bool is_red_team)
 {
+  // * === Set the Inital State of the Robot === * //
+  // Intake should store blocks
   intake.setState(Intake::states::STORE_TOP);
 
+  // Starting To the right of the park facing the right wall
   chassis.setPose({144 - (48 + 7.25 + 1.), 24, 90}, false);
 
-  // ? De-score loader
+  // ? === De-score first loader === ?
+  // Extend the matchload unloading arm
   matchload_unloader.extend();
-  pros::delay(200);  // Wait for the loader to extend before moving
-  chassis.moveToPoint(144 - 23.5, 24.0, 2000, {}, false);
+
+  // Move and turn to the loader
+  chassis.moveToPoint(144 - 23.5, 24.0, 2000, {}, true);
   chassis.turnToHeading(180, 1000, {}, false);
+
+  // Drive into loader to grab blocks
   chassis.moveToPoint(144 - 23.5, -100.0, 1400, {.maxSpeed = 40, .minSpeed = 10}, false);
+
+  // Wiggle in the loader to ensure blocks get full removed
   chassis.moveToPoint(144 - 23.5, 7.0, 1000, {.maxSpeed = 40, .minSpeed = 10}, false);
   chassis.moveToPose(144 - 23.5, -10, 175, 400);
   chassis.moveToPoint(144 - 23, -10.0, 600, {.maxSpeed = 40, .minSpeed = 10}, false);
 
-  // ! Attempt to score
+  // ! === Attempt to score in right long goal === ! //
+  // Grab position after loader
   auto after_loader = chassis.getPose();
+
+  // Move backwards ~ 3 Feild tiles (36 inches) from loader position to align to goal
   chassis.moveToPoint(
       after_loader.x - 0.75, after_loader.y + 36.0, 5000, {.forwards = false, .maxSpeed = 70});
+
+  // Wait to get to the goal
   pros::delay(675);
+
+  // Run anti-jam to ensure blocks will score
   intake.antiJam(true);
+
+  // Start scoring blocks for 5 seconds
   intake.setState(Intake::states::SCORING);
   pros::delay(5000);
-  matchload_unloader.retract();
-  chassis.cancelMotion();
 
-  // * Reset to the goal
+  // Reset the matchloader
+  matchload_unloader.retract();
+
+  // * === Reset to the goal === * //
+  // Grab position at right goal
   auto right_goal = chassis.getPose();
+
+  // Reset position to the goal, keep theta measurement the same
   chassis.setPose({144 - 24 + 1.5, 48 + 7.5, right_goal.theta});
 
-  // ! Go to loader 2
+  // ? === Go to left loader === ? //
+  // Remove remaining blocks in intake, as to not jam
   intake.setState(Intake::states::OUTTAKE);
+
+  // Leave the goal
   chassis.moveToPose(96, 36, -90, 2000, {.lead = (0.70710678118), .minSpeed = 40}, false);
+
+  // Set intake to pick up blocks
   intake.setState(Intake::states::STORE_TOP);
+
+  // Extend unloader to prepare for loader and move towards the left loader
   matchload_unloader.extend();
   chassis.moveToPose(27, 12, 180, 5000, {.lead = 0.65}, false);
 
-  // ! Attempt to score
+  // ! === Attempt to score in left long goal === ! //
+  // Grab position after left loader
   auto after_loader2 = chassis.getPose();
+
+  // Move backwards ~ 3 Feild tiles (36 inches) from loader position to align to goal
   chassis.moveToPoint(
       after_loader2.x, after_loader2.y + 36.0, 5000, {.forwards = false, .maxSpeed = 70});
+
+  // Wait to be against the goal before scoring
   pros::delay(675);
+
+  // Run anti-jam to ensure blocks will score
   intake.antiJam(true);
+
+  // Attempt to launch the blocks into the goal then slow down to try and get the control bonus
   intake.setIntakeMultiplier(1.0);
   intake.setState(Intake::states::SCORING);
-  pros::delay(1000);
+  pros::delay(1000);  // Score for 1 second at full speed
   intake.setIntakeMultiplier(0.8);
-  pros::delay(4000);
+  pros::delay(4000);  // Score for 4 seconds at 80% speed
+
+  // Reset the matchloader
   matchload_unloader.retract();
   pros::delay(800);
 
-  // * Reset to the goal
+  // * === Reset to the left long goal === * //
+  // Grab position at the left goal
   auto left_goal = chassis.getPose();
+
+  // Reset position to the goal, keep theta measurement the same
   chassis.setPose({24, 48 + 7.5, left_goal.theta});
 
-  // ! PARK
+  // ! === PARK === ! //
+  // Leave the left long goal
   chassis.moveToRelativePoint(0, -5, 2000, {.minSpeed = 30}, false);
+
+  // Move to the edge of the field about a feild tile left from the park
   chassis.moveToPoint(36, 18, 2000, {}, false);
+
+  // Turn towards the park, but look slightly towards the wall as it parks better that way
   chassis.turnToHeading(100, 1000);
+
+  // Drive straight at the heading for 58 inches into the park
   chassis.moveToRelativePoint(Chassis::fromPolar(58, 100), 2000, {.minSpeed = 60}, true);
+
+  // Wait a little before out-taking to throw all the blocks out the park
   pros::delay(800);
   intake.setState(Intake::states::OUTTAKE);
   intake.setMiddle(true);
-
-  //   chassis.moveToPose(48, 20, 90, 2000, {.lead = 0.7, .minSpeed = 80}, false);
-  //   intake.setState(Intake::states::OUTTAKE);
-  //   intake.setMiddle(true);
-  //   chassis.moveToPose(104, 11, 120, 2000, {.minSpeed = 80});
-  //   pros::delay(400);
-  //   chassis.moveToPoint(104, 11, 2000, {});
-  //   matchload_unloader.extend();
-  //   chassis.waitUntilDone();
-  //   matchload_unloader.retract();
 }
 
 void skills2(bool is_red_team)
