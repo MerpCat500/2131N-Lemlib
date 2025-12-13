@@ -73,31 +73,15 @@ void opcontrol()
       matchload_unloader.toggle();
     }
 
-    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
+    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
     {
-      if (goal_descore_right.is_extended())
-      {
-        goal_descore_left.retract();
-        goal_descore_right.retract();
-      }
-      else
-      {
-        goal_descore_left.retract();
-        goal_descore_right.extend();
-      }
+      goal_descore_left.toggle();
+      goal_descore_right.extend();
     }
-    else if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
+    else if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
-      if (goal_descore_left.is_extended())
-      {
-        goal_descore_left.retract();
-        goal_descore_right.retract();
-      }
-      else
-      {
-        goal_descore_left.extend();
-        goal_descore_right.retract();
-      }
+      goal_descore_left.retract();
+      goal_descore_right.toggle();
     }
 
     if (primary.get_digital(pros::E_CONTROLLER_DIGITAL_Y))

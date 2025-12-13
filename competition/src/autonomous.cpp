@@ -12,196 +12,113 @@ void debug(bool is_red_team) { chassis.setPose({0, 0, 0}, false); }
 
 void leftSideAwp(bool is_red_team)
 {
-  // * === Set the Inital State of the Robot === * //
-  // Intake should store blocks
   intake.setState(Intake::states::STORING);
 
-  // Starting To the left of the park facing the left wall
   chassis.setPose({48 + 7.25 + 1.5, 24, -90}, false);
 
-  // ? === De-score the First Loader === ? //
-  // Extend the matchload unloader
+  // ? De-score loader
   matchload_unloader.extend();
-
-  // Move and turn to the loader
+  pros::delay(200);  // Wait for the loader to extend before moving
   chassis.moveToPoint(26, 24.0, 2000, {}, false);
   chassis.turnToHeading(-180.0, 1000, {.minSpeed = 1}, false);
+  chassis.moveToPoint(26, -100.0, 1100, {.maxSpeed = 60, .minSpeed = 30}, false);
 
-  // Drive into loader to grab blocks
-  chassis.moveToPoint(
-      26,
-      -100.0,
-      1100,
-      {.maxSpeed = 60,
-       .minSpeed = 30},  // Clamp max speed to stop robot from launching blocks out of the field
-      false);
-
-  // ! === Attempt to Score in Left Goal === ! //
-  // Grab position after loader
+  // ! Attempt to score
   auto after_loader = chassis.getPose();
-
-  // Move backwards ~ 2 Feild tiles (48 inches) to align to goal
   chassis.moveToPoint(
       after_loader.x, after_loader.y + 48.0, 1800, {.forwards = false, .maxSpeed = 68}, false);
-
-  // Retract the matchload unloader
+  // pros::delay(1000);
+  //   intake.setState(Intake::states::SCORING);
+  //   pros::delay(2100);
   matchload_unloader.retract();
 
-  // * === Reckon to Left Goal === * //
-  // Grab position after scoring
+  // * Reckon to goal
   auto left_goal = chassis.getPose();
-
-  // Reset position to the goal, keep theta measurement the same.
   chassis.setPose({24., 48 - 7.25 + 3.5, left_goal.theta});
 
-  // ? === Grab Top Middle Blocks === ? //
-  // Un-jam anything in the intake
-  intake.antiJam(true);
-
-  // Move forward out of the goal as to not get stuck
+  // ? Grab Middle
+  intake.setState(Intake::states::OUTTAKE);
+  intake.setIntakeMultiplier(0.25);
   chassis.moveToRelativePoint(0., -8, 2000, {.minSpeed = 40}, false);
-
-  // Set intake state to store blocks
   intake.setState(Intake::states::STORING);
   intake.setIntakeMultiplier(1.0);
 
-  // Start swing motion at full speed, exit and slow down to .maxSpeed = 30
   chassis.moveToPose(48, 48, 10, 800, {.lead = 0.6}, false);
   chassis.moveToPose(48, 48, 10, 1000, {.lead = 0.6, .maxSpeed = 30}, false);
 
-  // ! === Score Top in Middle === ! //
-  // Turn to face the top middle goal
+  // ! Score Middle
   chassis.turnToHeading(45, 1000, {.maxSpeed = 80}, false);
-
-  // Set intake state (starts cycling blocks up)
   intake.setState(Intake::states::SCORE_MIDDLE);
-
-  // Move to the middle goal
   chassis.moveToPose(60.5, 61, 45, 1800, {.lead = 0.2, .minSpeed = 10}, false);
-
-  // Wait a little bit, open the middle goal flap to score
   pros::delay(200);
   intake.setMiddle(true);
-
-  // Try to score for about a second, then stop intake and leave
   pros::delay(1000);
   intake.setState(Intake::states::STOPPED);
 
-  // ? === Grab Bottom Middle Blocks === ? //
-  // Look towards the Right Alliance Side Corner
+  // * Go to middle blocks
   chassis.swingToHeading(135, lemlib::DriveSide::LEFT, 1000, {.minSpeed = 30}, false);
-
-  // Close Middle Goal Flap and Start Storing
   intake.setMiddle(false);
   intake.setState(Intake::states::STORING);
-
-  // Start moving towards the bottom middle blocks, then slow down to pick them up.
+  auto pose = chassis.getPose();
   chassis.moveToRelativePose({48, -10, -45}, 700, {.lead = 0.4}, false);
-  chassis.moveToRelativePose(
-      {48, 10, 90}, 2000, {.lead = 0.4, .maxSpeed = 40, .minSpeed = 1}, false);
+  chassis.moveToPose(
+      pose.x + 48, pose.y - 10, 90, 2000, {.lead = 0.4, .maxSpeed = 40, .minSpeed = 1}, false);
 
-  // ! === Score Middle Bottom === ! //
-  // Turn to face the middle goal
+  // ! Score Middle Bottom
   chassis.turnToHeading(-43, 1500, {.minSpeed = 1}, false);
-
-  // Move in a straight line to the middle goal
   chassis.moveToRelativePoint(Chassis::fromPolar(16.5, -43), 2000, {}, true);
-
-  // Start out-taking slowly to not launch blocks through the goal
   intake.setIntakeMultiplier(0.8);
   intake.setState(Intake::states::OUTTAKE);
-
-  // When the chassis has stopped moving, set intake to full speed.
   chassis.waitUntilDone();
   intake.setIntakeMultiplier(1.0);
 }
 
 void leftSide(bool is_red_team)
 {
-  // * === Set the Initial State of the Robot === * //
-  // Intake should store blocks
   intake.setState(Intake::states::STORING);
 
-  // Starting to the left of the park facing the left wall
   chassis.setPose({48 + 7.25 + 1., 24, -90}, false);
 
-  // ? === De-score loader === ? //
-  // Extend the matchload unloader
+  // ? De-score loader
   matchload_unloader.extend();
-
-  // Drive and turn to the loader
+  pros::delay(200);  // Wait for the loader to extend before moving
   chassis.moveToPoint(24.75, 24.0, 2000, {}, false);
   chassis.turnToHeading(-180.0, 1000, {}, false);
-
-  // Drive into the loader to grab blocks, use max speed to stop excessive force
   chassis.moveToPoint(24.75, -100.0, 1025, {.maxSpeed = 60, .minSpeed = 20}, false);
 
-  // ! === Attempt to score === ! //
-  // Grab position after loader
+  // ! Attempt to score
   auto after_loader = chassis.getPose();
-
-  // Move backwards 36 Inches relative to the loader
   chassis.moveToPoint(
       after_loader.x, after_loader.y + 36.0, 1800, {.forwards = false, .maxSpeed = 80});
-
-  // Delay to get to the goal
   pros::delay(600);
-
-  // Start Scoring for 2.2 seconds
   intake.setState(Intake::states::SCORING);
   pros::delay(2200);
-
-  // Reset the matchloader
   matchload_unloader.retract();
+  chassis.cancelMotion();
 
-  // * === Reset to the goal === * //
+  // * Reset to the goal
   auto left_goal = chassis.getPose();
   chassis.setPose({24., 48 - 7.25 + 2.5, left_goal.theta});
 
-<<<<<<< HEAD
   // ? Grab Middle
   intake.setState(Intake::states::SCORING);
   chassis.moveToPose(36, 36, 90, 2000, {.lead = 0.9, .minSpeed = 20}, false);
-=======
-  // ? Grab Middle Blocks
-  // Anti-jam any stuck blocks
-  intake.antiJam(true);
-
-  // Move out of the goal
-  chassis.moveToPose(36, 36, 90, 2000, {.lead = 0.9, .minSpeed = 10}, false);
-
-  // Set intake to storing
->>>>>>> e684ea323ac645e53fc66c12e6675778f25d5cca
   intake.setState(Intake::states::STORING);
-
-  // Look towards middle goal and move towards it slowly
   chassis.turnToHeading(46, 1000, {.minSpeed = 1}, false);
   chassis.moveToRelativePoint(Chassis::fromPolar(14 * sqrt(2), 46), 2200, {.maxSpeed = 50}, false);
 
-<<<<<<< HEAD
   // ! Score Middle
   chassis.turnToHeading(48, 1000, {}, false);
   chassis.moveToRelativePoint(Chassis::fromPolar(19, 48), 2000, {.minSpeed = 45}, false);
 
-  
-=======
-  // ! Score Middle Blocks
-  // Ensure the robot is still looking at the middle goal
-  chassis.turnToHeading(45, 1000, {}, false);
-
-  // Move to the middle goal and score in the middle goal for 1.4 seconds
-  chassis.moveToRelativePoint(Chassis::fromPolar(21.5, 45), 1800, {.maxSpeed = 60}, false);
->>>>>>> e684ea323ac645e53fc66c12e6675778f25d5cca
   intake.setState(Intake::states::SCORE_MIDDLE);
   intake.setMiddle(true);
   pros::delay(1400);
 
-  // * === Retreat to Corner to Start Driver === * //
-  // Back up 45 inches in the direction the robot is facing.
+  // * Retreat
   chassis.moveToRelativePoint(
       Chassis::fromPolar(-45, 45), 2000, {.forwards = false, .minSpeed = 10}, false);
 
-<<<<<<< HEAD
   // // ! Score Middle
   // chassis.turnToHeading(45, 1000, {}, false);
   // chassis.moveToPose(59.25, 62.75, 45, 1800, {.lead = 0.2}, false);
@@ -212,213 +129,135 @@ void leftSide(bool is_red_team)
   // // * Retreat and wack
   // intake.setMiddle(false);
   // chassis.turnToHeading(180, 2000, {.minSpeed = 1}, false);
-=======
-  // Reset intake and face the loader to prepare for driver control
-  intake.setMiddle(false);
-  chassis.turnToHeading(180, 2000, {.minSpeed = 1}, false);
->>>>>>> e684ea323ac645e53fc66c12e6675778f25d5cca
 }
 
 void rightSide(bool is_red_team)
 {
-  // * === Set the Initial State of the Robot === * //
-  // Intake should store blocks
   intake.setState(Intake::states::STORING);
 
-  // Starting to the right of the park facing the right wall
   chassis.setPose({-(48 + 7.25 + 1.), 24, 90}, false);
 
-  // ? === De-score loader === ? //
-  // Extend the matchload unloader
+  // ? De-score loader
   matchload_unloader.extend();
-
-  // Move and turn to the loader
+  pros::delay(200);  // Wait for the loader to extend before moving
   chassis.moveToPoint(-24.5, 24.0, 2000, {}, false);
   chassis.turnToHeading(179.0, 1000, {.minSpeed = 1}, false);
-
-  // Drive into the loader to grab blocks, implement max speed to stop excessive force launching
-  // blocks
   chassis.moveToPoint(-24.5, -100.0, 1050, {.maxSpeed = 50, .minSpeed = 20}, false);
 
-  // ! === Attempt to score === ! //
-  // Grab position after loader
+  // ! Attempt to score
   auto after_loader = chassis.getPose();
-
-  // Move backwards 36 Inches relative to the loader
   chassis.moveToPoint(
       after_loader.x + 0.5, after_loader.y + 36.0, 1800, {.forwards = false, .maxSpeed = 80});
-
-  // Delay to get to the goal
   pros::delay(600);
-
-  // Start Scoring for 2.5 seconds
   intake.setState(Intake::states::SCORING);
   pros::delay(2500);
-
-  // Reset the matchloader
   matchload_unloader.retract();
+  chassis.cancelMotion();
 
-  // * === Reset to the goal === * //
-  // Grab left
-  auto right_goal = chassis.getPose();
-  chassis.setPose({-20., 48 - 7.25 + 3, right_goal.theta});
+  // * Reset to the goal
+  auto left_goal = chassis.getPose();
+  chassis.setPose({-20., 48 - 7.25 + 3, left_goal.theta});
 
-  // ? === Grab Middle Blocks === ? //
-  // Un-jam any stuck blocks
-  intake.antiJam(true);
-
-  // Move out of the goal
+  // ? Grab Middle
+  intake.setState(Intake::states::SCORING);
   chassis.moveToPose(-36, 36, -90, 2000, {.lead = 0.8, .minSpeed = 10}, false);
-
-  // Set intake to storing
   intake.setState(Intake::states::STORING);
-
-  // Look towards middle goal and move towards it slowly
   chassis.turnToHeading(-44, 1000, {.minSpeed = 1}, false);
   chassis.moveToRelativePoint(Chassis::fromPolar(16 * sqrt(2), -44), 2200, {.maxSpeed = 30}, false);
 
-  //! === Score Middle Blocks === ! //
-  // Ensure the robot is still looking at the middle goal
+  //! Score Middle
   chassis.turnToHeading(-43.5, 1000, {}, false);
-
-  // Move to the middle goal and score in the middle goal
   chassis.moveToRelativePoint(Chassis::fromPolar(19.0, -43.5), 1800, {.maxSpeed = 80}, false);
-
-  // Wait for 1.4 seconds while out-taking
   intake.setState(Intake::states::OUTTAKE);
-  pros::delay(1400);
 
-  // Ram the middle bottom goal to try and get any last blocks in
   chassis.moveToRelativePoint(Chassis::fromPolar(-4, -43.5), 1800, {.maxSpeed = 127}, false);
   chassis.moveToRelativePoint(Chassis::fromPolar(4, -43.5), 1800, {.maxSpeed = 80}, false);
 
-  // Retreat to the corner to start driver control
+  pros::delay(1400);
+
+  // Retreat
   chassis.moveToRelativePoint(
       lemlib::Pose{0, 2, 0} + Chassis::fromPolar(38 * sqrt(2), 135),
       2000,
       {.forwards = false},
       false);
 
-  // Look at loader if time remains
   chassis.turnToHeading(180, 2000, {.minSpeed = 1}, false);
 }
 
 void skills(bool is_red_team)
 {
-  // * === Set the Inital State of the Robot === * //
-  // Intake should store blocks
   intake.setState(Intake::states::STORE_TOP);
 
-  // Starting To the right of the park facing the right wall
   chassis.setPose({144 - (48 + 7.25 + 1.), 24, 90}, false);
 
-  // ? === De-score first loader === ?
-  // Extend the matchload unloading arm
+  // ? De-score loader
   matchload_unloader.extend();
-
-  // Move and turn to the loader
-  chassis.moveToPoint(144 - 23.5, 24.0, 2000, {}, true);
+  pros::delay(200);  // Wait for the loader to extend before moving
+  chassis.moveToPoint(144 - 23.5, 24.0, 2000, {}, false);
   chassis.turnToHeading(180, 1000, {}, false);
-
-  // Drive into loader to grab blocks
   chassis.moveToPoint(144 - 23.5, -100.0, 1400, {.maxSpeed = 40, .minSpeed = 10}, false);
-
-  // Wiggle in the loader to ensure blocks get full removed
   chassis.moveToPoint(144 - 23.5, 7.0, 1000, {.maxSpeed = 40, .minSpeed = 10}, false);
   chassis.moveToPose(144 - 23.5, -10, 175, 400);
   chassis.moveToPoint(144 - 23, -10.0, 600, {.maxSpeed = 40, .minSpeed = 10}, false);
 
-  // ! === Attempt to score in right long goal === ! //
-  // Grab position after loader
+  // ! Attempt to score
   auto after_loader = chassis.getPose();
-
-  // Move backwards ~ 3 Feild tiles (36 inches) from loader position to align to goal
   chassis.moveToPoint(
       after_loader.x - 0.75, after_loader.y + 36.0, 5000, {.forwards = false, .maxSpeed = 70});
-
-  // Wait to get to the goal
   pros::delay(675);
-
-  // Run anti-jam to ensure blocks will score
   intake.antiJam(true);
-
-  // Start scoring blocks for 5 seconds
   intake.setState(Intake::states::SCORING);
   pros::delay(5000);
-
-  // Reset the matchloader
   matchload_unloader.retract();
+  chassis.cancelMotion();
 
-  // * === Reset to the goal === * //
-  // Grab position at right goal
+  // * Reset to the goal
   auto right_goal = chassis.getPose();
-
-  // Reset position to the goal, keep theta measurement the same
   chassis.setPose({144 - 24 + 1.5, 48 + 7.5, right_goal.theta});
 
-  // ? === Go to left loader === ? //
-  // Remove remaining blocks in intake, as to not jam
+  // ! Go to loader 2
   intake.setState(Intake::states::OUTTAKE);
-
-  // Leave the goal
   chassis.moveToPose(96, 36, -90, 2000, {.lead = (0.70710678118), .minSpeed = 40}, false);
-
-  // Set intake to pick up blocks
   intake.setState(Intake::states::STORE_TOP);
-
-  // Extend unloader to prepare for loader and move towards the left loader
   matchload_unloader.extend();
   chassis.moveToPose(27, 12, 180, 5000, {.lead = 0.65}, false);
 
-  // ! === Attempt to score in left long goal === ! //
-  // Grab position after left loader
+  // ! Attempt to score
   auto after_loader2 = chassis.getPose();
-
-  // Move backwards ~ 3 Feild tiles (36 inches) from loader position to align to goal
   chassis.moveToPoint(
       after_loader2.x, after_loader2.y + 36.0, 5000, {.forwards = false, .maxSpeed = 70});
-
-  // Wait to be against the goal before scoring
   pros::delay(675);
-
-  // Run anti-jam to ensure blocks will score
   intake.antiJam(true);
-
-  // Attempt to launch the blocks into the goal then slow down to try and get the control bonus
   intake.setIntakeMultiplier(1.0);
   intake.setState(Intake::states::SCORING);
-  pros::delay(1000);  // Score for 1 second at full speed
+  pros::delay(1000);
   intake.setIntakeMultiplier(0.8);
-  pros::delay(4000);  // Score for 4 seconds at 80% speed
-
-  // Reset the matchloader
+  pros::delay(4000);
   matchload_unloader.retract();
   pros::delay(800);
 
-  // * === Reset to the left long goal === * //
-  // Grab position at the left goal
+  // * Reset to the goal
   auto left_goal = chassis.getPose();
-
-  // Reset position to the goal, keep theta measurement the same
   chassis.setPose({24, 48 + 7.5, left_goal.theta});
 
-  // ! === PARK === ! //
-  // Leave the left long goal
+  // ! PARK
   chassis.moveToRelativePoint(0, -5, 2000, {.minSpeed = 30}, false);
-
-  // Move to the edge of the field about a feild tile left from the park
   chassis.moveToPoint(36, 18, 2000, {}, false);
-
-  // Turn towards the park, but look slightly towards the wall as it parks better that way
   chassis.turnToHeading(100, 1000);
-
-  // Drive straight at the heading for 58 inches into the park
   chassis.moveToRelativePoint(Chassis::fromPolar(58, 100), 2000, {.minSpeed = 60}, true);
-
-  // Wait a little before out-taking to throw all the blocks out the park
   pros::delay(800);
   intake.setState(Intake::states::OUTTAKE);
   intake.setMiddle(true);
+  //   chassis.moveToPose(48, 20, 90, 2000, {.lead = 0.7, .minSpeed = 80}, false);
+  //   intake.setState(Intake::states::OUTTAKE);
+  //   intake.setMiddle(true);
+  //   chassis.moveToPose(104, 11, 120, 2000, {.minSpeed = 80});
+  //   pros::delay(400);
+  //   chassis.moveToPoint(104, 11, 2000, {});
+  //   matchload_unloader.extend();
+  //   chassis.waitUntilDone();
+  //   matchload_unloader.retract();
 }
 
 void skills2(bool is_red_team)
