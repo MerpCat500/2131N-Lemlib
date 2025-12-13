@@ -102,15 +102,16 @@ void leftSide(bool is_red_team)
 
   // ? Grab Middle
   intake.setState(Intake::states::SCORING);
-  chassis.moveToPose(36, 36, 90, 2000, {.lead = 0.9, .minSpeed = 10}, false);
+  chassis.moveToPose(36, 36, 90, 2000, {.lead = 0.9, .minSpeed = 20}, false);
   intake.setState(Intake::states::STORING);
   chassis.turnToHeading(46, 1000, {.minSpeed = 1}, false);
-  chassis.moveToRelativePoint(Chassis::fromPolar(14 * sqrt(2), 46), 2200, {.maxSpeed = 30}, false);
+  chassis.moveToRelativePoint(Chassis::fromPolar(14 * sqrt(2), 46), 2200, {.maxSpeed = 50}, false);
 
   // ! Score Middle
-  chassis.turnToHeading(45, 1000, {}, false);
-  chassis.moveToRelativePoint(Chassis::fromPolar(21.5, 45), 1800, {.minSpeed = 60}, false);
+  chassis.turnToHeading(48, 1000, {}, false);
+  chassis.moveToRelativePoint(Chassis::fromPolar(19, 48), 2000, {.minSpeed = 45}, false);
 
+  
   intake.setState(Intake::states::SCORE_MIDDLE);
   intake.setMiddle(true);
   pros::delay(1400);
@@ -118,8 +119,17 @@ void leftSide(bool is_red_team)
   // * Retreat
   chassis.moveToRelativePoint(
       Chassis::fromPolar(-45, 45), 2000, {.forwards = false, .minSpeed = 10}, false);
-  intake.setMiddle(false);
-  chassis.turnToHeading(180, 2000, {.minSpeed = 1}, false);
+
+  // // ! Score Middle
+  // chassis.turnToHeading(45, 1000, {}, false);
+  // chassis.moveToPose(59.25, 62.75, 45, 1800, {.lead = 0.2}, false);
+  // intake.setState(Intake::states::SCORE_MIDDLE);
+  // intake.setMiddle(true);
+  // pros::delay(1500);
+
+  // // * Retreat and wack
+  // intake.setMiddle(false);
+  // chassis.turnToHeading(180, 2000, {.minSpeed = 1}, false);
 }
 
 void rightSide(bool is_red_team)
