@@ -220,7 +220,7 @@ class Intake
           break;
         case states::STOPPED:
           bottom_stage_->set_brake_mode_all(pros::MotorBrake::coast);
-          middle_stage_->set_brake_mode_all(pros::MotorBrake::hold);
+          middle_stage_->set_brake_mode_all(pros::MotorBrake::coast);
           top_stage_->set_brake_mode_all(pros::MotorBrake::coast);
 
           bottom_stage_->brake();
