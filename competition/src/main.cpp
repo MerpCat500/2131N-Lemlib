@@ -24,15 +24,18 @@ void initialize()
 
   screen.initialize(1, true);
 
-  screen.addTelemetries({
-      {"Battery", []() { return std::to_string(pros::battery::get_capacity()); }},
-      {"Position",
-       []() {
-         auto position = chassis.getPose();
-         return "\n  X: " + std::to_string(position.x) + "\n  Y: " + std::to_string(position.y) +
-                "\n  Theta: " + std::to_string(position.theta);
-       }},
-  });
+  screen.addTelemetries(
+      {{"Battery", []() { return std::to_string(pros::battery::get_capacity()); }},
+       {"Position",
+        []() -> std::string {
+          auto position = chassis.getPose();
+          return "  (" + std::to_string(position.x) + ", " + std::to_string(position.y) + ", " +
+                 std::to_string(position.theta) + ")";
+        }},
+       {"Position (MCL)", []() -> std::string {
+          auto position = mcl_localization.get_point_estimate();
+          return "  X: " + std::to_string(position.x) + "  Y: " + std::to_string(position.y);
+        }}});
 }
 
 /**
@@ -80,7 +83,7 @@ void opcontrol()
     }
     else if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
-      goal_descore_left.retract();
+      goal_descore_left.extend();
       goal_descore_right.toggle();
     }
 

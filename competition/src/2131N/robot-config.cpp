@@ -74,3 +74,17 @@ Intake intake(
     pros::E_CONTROLLER_DIGITAL_R2);
 
 Screen screen;
+
+DistanceSensor left_distance({-1.0, 5.5}, -M_PI_2, 17);
+DistanceSensor right_distance({-0.5, -5.5}, M_PI_2, 19);
+DistanceSensor back_distance({-1.5, 6.5}, M_PI, 20);
+DistanceSensor front_distance({-1.5, 6.5}, 0, 16);
+
+Mcl<800> mcl_localization(
+    &chassis,
+    std::make_shared<Field>(Field(Point(1, 1), Point(143, 143))),
+    std::vector<DistanceSensor*>{
+        &left_distance,
+        &back_distance,
+        &right_distance,
+    });
