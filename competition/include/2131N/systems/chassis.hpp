@@ -39,4 +39,7 @@ class Chassis : public lemlib::Chassis
       float deltaHeading, int timeout, lemlib::TurnToHeadingParams p = {}, bool async = true);
 
   static lemlib::Pose fromPolar(float r, float theta, bool radians = false);
+
+  void tank_with_dead_zone(
+      double left_speed, double right_speed, double dead_zone, bool drive_curve = false);
 };

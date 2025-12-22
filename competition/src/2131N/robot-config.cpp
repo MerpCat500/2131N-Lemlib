@@ -76,9 +76,9 @@ Intake intake(
 Screen screen;
 
 DistanceSensor left_distance({-1.0, 5.5}, -M_PI_2, 17);
-DistanceSensor right_distance({-0.5, -5.5}, M_PI_2, 19);
+DistanceSensor right_distance({-1.5, -4.5}, M_PI_2, 19);
 DistanceSensor back_distance({-1.5, 6.5}, M_PI, 20);
-DistanceSensor front_distance({-1.5, 6.5}, 0, 16);
+DistanceSensor front_distance({-5.25, 5.5625}, 0, 16);
 
 Mcl<800> mcl_localization(
     &chassis,

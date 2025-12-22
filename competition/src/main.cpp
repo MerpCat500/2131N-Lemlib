@@ -89,17 +89,19 @@ void opcontrol()
 
     if (primary.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
     {
-      chassis.tank(
+      chassis.tank_with_dead_zone(
           primary.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) * 0.5,
           primary.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) * 0.5,
-          true);
+          17,
+          false);
     }
     else
     {
-      chassis.tank(
+      chassis.tank_with_dead_zone(
           primary.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y),
           primary.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y),
-          true);
+          17,
+          false);
     }
 
     pros::delay(10);

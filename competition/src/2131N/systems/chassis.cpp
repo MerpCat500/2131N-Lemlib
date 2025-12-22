@@ -45,3 +45,11 @@ lemlib::Pose Chassis::fromPolar(float r, float theta, bool radians)
   if (!radians) { theta = theta * (M_PI / 180.0); }
   return lemlib::Pose(r * std::sin(theta), r * std::cos(theta), 0);
 }
+
+void Chassis::tank_with_dead_zone(
+    double left_speed, double right_speed, double dead_zone, bool drive_curve)
+{
+  if (std::abs(left_speed) < dead_zone) left_speed = 0;
+  if (std::abs(right_speed) < dead_zone) right_speed = 0;
+  this->lemlib::Chassis::tank(left_speed, right_speed, !drive_curve);
+}

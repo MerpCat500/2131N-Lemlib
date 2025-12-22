@@ -33,6 +33,8 @@ class Mcl
   double last_chassis_heading = 0.0;
   Point point_estimate = {0, 0};
 
+  bool enabled = false;
+
   // Pointer to the field/environment
   std::shared_ptr<Field> pField;
 
@@ -53,6 +55,8 @@ class Mcl
   std::normal_distribution<double> roughening_dist{0.0, 0.005};
 
   pros::Task update_task;
+
+  double odometry_reset_threshold = 1.0;  // Inches
 
  public:
   Mcl(Chassis* chassis, std::shared_ptr<Field> field, std::vector<DistanceSensor*> distance_sensors)
@@ -301,6 +305,24 @@ class Mcl
       }
     }
 
+    auto variance = get_position_estimate_variance();
+    if (variance > 14.0)
+    {
+      // Reinitialize all particles randomly
+      for (auto& particle : particles)
+      {
+        Point p{
+            uniform_dist(rng()) * pField->get_max_point().x,
+            uniform_dist(rng()) * pField->get_max_point().y};
+        particle.set_position(p);
+        particle.set_weight(1.0 / static_cast<double>(Samples));
+      }
+    }
+    else if (variance < odometry_reset_threshold && enabled)
+    {
+      pChassis->setPose({point_estimate.x, point_estimate.y, robot_pose.theta}, true);
+    }
+
     last_chassis_position = Point{robot_pose.x, robot_pose.y};
     last_chassis_heading = robot_pose.theta;
   }
@@ -308,8 +330,48 @@ class Mcl
   // lightweight accessors for testing
   size_t get_particle_count() const { return Samples; }
 
+  void set_odometry_reset_threshold(double threshold) { odometry_reset_threshold = threshold; }
+
   // return a copy of particle at index (caller should check bounds)
   Particle get_particle(size_t idx) const { return particles[idx]; }
 
   const std::array<Particle, Samples>& get_particles() { return particles; }
+
+  void reset_particles()
+  {
+    size_t index = 0;
+    // Reinitialize particles uniformly within the environment
+    size_t grid_size = static_cast<size_t>(std::sqrt(Samples));
+    for (size_t i = 0; i < grid_size; i++)
+    {
+      for (size_t j = 0; j < grid_size; j++)
+      {
+        Point p{
+            j * (pField->get_max_point().x / grid_size),
+            i * (pField->get_max_point().y / grid_size)};
+
+        particles[index] = Particle(p, 1.0 / static_cast<double>(Samples));
+
+        index++;
+      }
+    }
+  }
+
+  double get_position_estimate_variance() const
+  {
+    // Calculate weighted variance of particle positions around the point estimate
+    double variance = 0.0;
+
+    for (const auto& particle : particles)
+    {
+      Point delta = particle.get_position() - point_estimate;
+      double distance_squared = delta.x * delta.x + delta.y * delta.y;
+      double weight = particle.get_weight();
+      variance += weight * distance_squared;
+    }
+
+    return variance;
+  }
+
+  void set_enabled(bool enabled) { this->enabled = enabled; }
 };
