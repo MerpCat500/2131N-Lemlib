@@ -33,6 +33,9 @@ class DistanceSensor
   // Cache trig functions for efficiency
   double cached_sin;
   double cached_cos;
+  bool enabled = true;
+
+  const double size_threshold;
 
   // Pointer to the field for distance calculations
   std::unique_ptr<pros::Distance> pDistance;
@@ -45,12 +48,14 @@ class DistanceSensor
   std::normal_distribution<double> noise_dist;
 
  public:
-  DistanceSensor(Point offset, double heading_offset, int distance_port)
+  DistanceSensor(
+      Point offset, double heading_offset, int distance_port, double size_threshold = 60.0)
       : offset(offset),
         heading_offset(heading_offset),
         last_heading(std::numeric_limits<double>::infinity()),
         last_position(
             {std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity()}),
+        size_threshold(size_threshold),
         cached_sin(0.0),
         cached_cos(1.0),
         pDistance(std::make_unique<pros::Distance>(distance_port)),
@@ -58,6 +63,8 @@ class DistanceSensor
         noise_dist(0.0, distance_sensor_std)
   {
   }
+
+  void set_enabled(bool enabled) { this->enabled = enabled; }
 
   void update(const Point& robot_position, const double& robot_heading)
   {
@@ -83,8 +90,9 @@ class DistanceSensor
       // Account for theta = 0 being y+
       last_distance_reading = pDistance->get_distance() / 25.4;  // Convert mm to inches
 
-      if (last_distance_reading <= 0.0 || last_distance_reading >= 143.0 * std::sqrt(2) ||
-          (pDistance->get_object_size() < 60 && pDistance->get_object_size() != -1))
+      if ((last_distance_reading <= 0.0 || last_distance_reading >= 143.0 * std::sqrt(2) ||
+           (pDistance->get_object_size() < size_threshold && pDistance->get_object_size() != -1)) ||
+          !enabled)
       {
         last_distance_reading = -1;
       }

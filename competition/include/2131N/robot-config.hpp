@@ -18,6 +18,7 @@ extern Chassis chassis;
 extern DistanceSensor left_distance;
 extern DistanceSensor right_distance;
 extern DistanceSensor back_distance;
+extern DistanceSensor front_distance;
 
 extern Intake intake;
 extern Screen screen;

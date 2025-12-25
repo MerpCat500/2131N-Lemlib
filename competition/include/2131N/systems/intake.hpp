@@ -185,7 +185,7 @@ class Intake
         case states::STORING:
 
           bottom_stage_->move_voltage(12000 * this->intake_multiplier_);
-          top_stage_->move_voltage(-0 * this->intake_multiplier_);
+          top_stage_->move_voltage(-1000 * this->intake_multiplier_);
           if (ball_detector.getValue())
           {
             middle_stage_->set_encoder_units_all(pros::MotorEncoderUnits::deg);

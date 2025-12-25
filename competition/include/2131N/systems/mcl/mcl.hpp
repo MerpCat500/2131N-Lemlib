@@ -337,23 +337,15 @@ class Mcl
 
   const std::array<Particle, Samples>& get_particles() { return particles; }
 
-  void reset_particles()
+  void reset_particles(Point robot_guess, double spread)
   {
-    size_t index = 0;
-    // Reinitialize particles uniformly within the environment
-    size_t grid_size = static_cast<size_t>(std::sqrt(Samples));
-    for (size_t i = 0; i < grid_size; i++)
+    for (auto& particle : particles)
     {
-      for (size_t j = 0; j < grid_size; j++)
-      {
-        Point p{
-            j * (pField->get_max_point().x / grid_size),
-            i * (pField->get_max_point().y / grid_size)};
-
-        particles[index] = Particle(p, 1.0 / static_cast<double>(Samples));
-
-        index++;
-      }
+      Point p{
+          robot_guess.x + uniform_dist(rng()) * spread,
+          robot_guess.y + uniform_dist(rng()) * spread};
+      particle.set_position(p);
+      particle.set_weight(1.0 / static_cast<double>(Samples));
     }
   }
 

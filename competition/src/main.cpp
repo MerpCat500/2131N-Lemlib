@@ -12,17 +12,18 @@
 void initialize()
 {
   chassis.calibrate(true);
+  mcl_localization.set_enabled(false);
 
-  screen.addAutos(
-      {{"Debug", "Debug Auto, DO NOT RUN AT COMP", debug},
-       {"Left Side", "Left Side Half Autonomous Win Point", leftSide},
-       {"Right Side", "Right Side Half Autonomous Win Point", rightSide},
-       {"Right Side Final", "Right Side Eye Candy", rightSideFinals},
-       {"Left Side AWP", "Left Side Autonomous Win Point", leftSideAwp},
-       {"Skills", "Skills Autonomous", skills},
-       {"Skills Two", "A Higher Scoring Auto... maybe :/", skills2}});
+  screen.addAutos({
+      {"Debug", "Debug Auto, DO NOT RUN AT COMP", debug},
+      {"Left Side", "Left Side Half Autonomous Win Point", leftSide},
+      {"Right Side", "Right Side Half Autonomous Win Point", rightSide},
+      {"Right Side Final", "Right Side Eye Candy", rightSideFinals},
+      {"Left Side AWP", "Left Side Autonomous Win Point", leftSideAwp},
+      {"Skills", "Skills Autonomous", skills},
+  });
 
-  screen.initialize(1, true);
+  screen.initialize(5, true);
 
   screen.addTelemetries(
       {{"Battery", []() { return std::to_string(pros::battery::get_capacity()); }},
