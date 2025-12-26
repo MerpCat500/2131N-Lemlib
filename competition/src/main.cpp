@@ -55,7 +55,13 @@ void competition_initialize() {}
  * @brief Runs when robot is in autonomous mode.
  *
  */
-void autonomous() { screen.getCurrentAutoCallback()(screen.getRedTeam()); }
+void autonomous()
+{
+  goal_descore_left.extend();
+  goal_descore_right.extend();
+
+  screen.getCurrentAutoCallback()(screen.getRedTeam());
+}
 
 /**
  * @brief Runs when the robot is in driver control mode.
