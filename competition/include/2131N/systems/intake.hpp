@@ -175,7 +175,7 @@ class Intake
     {
       jam_loop_++;
       bottom_stage_->move_voltage(-12000);
-      middle_stage_->move_voltage(-4000);
+      middle_stage_->move_voltage(-8000);
       if (jam_loop_ > 10) { this->antiJam(false); }
     }
     else

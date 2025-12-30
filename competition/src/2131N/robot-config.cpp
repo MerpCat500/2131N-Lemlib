@@ -78,7 +78,7 @@ Screen screen;
 DistanceSensor left_distance({-1.0, 5.5}, -M_PI_2, 17);
 DistanceSensor right_distance({-1.5, -4.5}, M_PI_2, 19);
 DistanceSensor back_distance({1.5, 6.5}, M_PI, 20);
-DistanceSensor front_distance({5.25, 7.0}, 0, 15, 40);
+DistanceSensor front_distance({5.25, 7.0}, 0, 16, 40);
 
 Mcl<800> mcl_localization(
     &chassis,

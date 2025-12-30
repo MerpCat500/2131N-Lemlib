@@ -16,14 +16,15 @@ void initialize()
 
   screen.addAutos({
       {"Debug", "Debug Auto, DO NOT RUN AT COMP", debug},
-      {"Left Side", "Left Side Half Autonomous Win Point", leftSide},
+      {"Left Side", "Left Side Half Autonomous Win Point danielle's slay queen", leftSide},
       {"Right Side", "Right Side Half Autonomous Win Point", rightSide},
       {"Right Side Final", "Right Side Eye Candy", rightSideFinals},
       {"Left Side AWP", "Left Side Autonomous Win Point", leftSideAwp},
       {"Skills", "Skills Autonomous", skills},
+      {"SafeSkills", " Safest john deer run Skills Autonomous", Safeskills},
   });
 
-  screen.initialize(5, true);
+  screen.initialize(6, true);
 
   screen.addTelemetries(
       {{"Battery", []() { return std::to_string(pros::battery::get_capacity()); }},
