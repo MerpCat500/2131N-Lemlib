@@ -24,7 +24,7 @@ void initialize()
       {"SafeSkills", " Safest john deer run Skills Autonomous", Safeskills},
   });
 
-  screen.initialize(6, true);
+  screen.initialize(1, true);
 
   screen.addTelemetries(
       {{"Battery", []() { return std::to_string(pros::battery::get_capacity()); }},

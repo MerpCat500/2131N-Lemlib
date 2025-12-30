@@ -442,11 +442,55 @@ void Safeskills(bool is_red_team)
       Chassis::fromPolar(-9.5, 270), 2000, {.forwards = false, .maxSpeed = 59}, false);
   chassis.turnToHeading(180, 500);
   chassis.moveToRelativePoint(Chassis::fromPolar(-17, 180), 2000, {.forwards = false}, false);
+  //! scoring second time first goal
+
   intake.setState(Intake::states::SCORING);
-  pros::delay(500);
+  pros::delay(1400);
   chassis.moveToRelativePoint(
-      Chassis::fromPolar(-16, 0), 2000, {.forwards = false, .maxSpeed = 60}, false);
+      Chassis::fromPolar(13, 180), 2000, {.forwards = true, .maxSpeed = 60}, false);
   chassis.turnToHeading(270, 600);
+  chassis.moveToRelativePoint(
+      Chassis::fromPolar(95, 270), 4000, {.forwards = true, .maxSpeed = 70}, false);
+  chassis.turnToHeading(180, 500);
+   matchload_unloader.extend();
+   intake.setState(Intake::states::STORING);
+   chassis.moveToRelativePoint(
+      Chassis::fromPolar(167.5, 180), 2000, {.forwards = true, .minSpeed = 30}, false);
+    pros::delay(1500);
+     chassis.moveToRelativePoint(
+      Chassis::fromPolar(-34, 180), 2000, {.forwards = false, .maxSpeed = 60}, false);
+    intake.setState(Intake::states::SCORING);
+    pros::delay(1000);
+  intake.setState(Intake::states::OUTTAKE);
+  pros::delay(200);
+  intake.setState(Intake::states::SCORING);
+  pros::delay(1500);
+  matchload_unloader.retract();
+  intake.setState(Intake::states::STORING);
+
+   intake.setState(Intake::states::STORING);
+  chassis.moveToRelativePoint(Chassis::fromPolar(-16, 0), 2000, {}, false);
+  chassis.turnToHeading(-270, 500);
+  chassis.moveToRelativePoint(Chassis::fromPolar(9.5, -270), 2000, {}, false);
+  chassis.turnToHeading(-328, 500);
+  chassis.moveToRelativePoint(Chassis::fromPolar(31, -328), 2000, {.maxSpeed = 38}, false);
+  pros::delay(300);
+  chassis.moveToRelativePoint(Chassis::fromPolar(-31, -328), 2000, {.forwards = false, .maxSpeed = 50}, false);
+  chassis.turnToHeading(-270, 400);
+  chassis.moveToRelativePoint(Chassis::fromPolar(-9.5, -270), 2000, {.forwards = false, .maxSpeed = 59}, false);
+  chassis.turnToHeading(-180, 500);
+  chassis.moveToRelativePoint(Chassis::fromPolar(-17, -180), 2000, {.forwards = false}, false);
+  intake.setState(Intake::states::SCORING);
+  pros::delay(2000);
+  chassis.moveToRelativePoint(Chassis::fromPolar(17, -180), 2000, {.forwards = true, .maxSpeed = 59}, false);
+  chassis.turnToHeading(-235, 400);
+  chassis.moveToRelativePoint(Chassis::fromPolar(16, -235), 2000, {.forwards = true, .maxSpeed = 59}, false);
+  chassis.turnToHeading(-255 +180, 500);
+  chassis.moveToRelativePoint(Chassis::fromPolar(-40, -255 +180), 2000, {.forwards = false, .minSpeed = 72}, false);
+  chassis.moveToRelativePoint(Chassis::fromPolar(-20, -255 +180), 2000, {.forwards = false, .minSpeed = 70}, false);
+  pros::delay(100);
+  chassis.moveToRelativePoint(Chassis::fromPolar(-20, -255 +180), 2000, {.forwards = false, .minSpeed = 70}, false);
+  intake.setState(Intake::states::SCORE_MIDDLE);
   // chassis.moveToPoint(-11, 20, 1000, {.forwards = false});
   //    //! moving away from goal and swiping first one
   //    chassis.moveToPoint(
