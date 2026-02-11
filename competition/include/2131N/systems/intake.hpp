@@ -27,6 +27,7 @@ class Intake
   pros::Motor* top_stage_;     // Pointer to the top stage motor
 
   pros::adi::Pneumatics* middle_stage_gate_;  // Middle stage gate
+  // pros::adi::Pneumatics* first_stage_lift;
 
   pros::Distance* bottom_detector_;  // Pointer to the bottom stage detector
   float detection_range_;            // Anything less than this number will be counted as detected
@@ -58,6 +59,7 @@ class Intake
   {
     STOPPED,
     OUTTAKE,
+    OUTTAKEMIDDLE,
     STORING,
     SCORING,
     SCORE_MIDDLE,
@@ -108,6 +110,8 @@ class Intake
       else if (score_mode_) { setState(states::SCORING); }
       else { setState(states::STORING); }
     }
+    // else if (primary_->get_digital_new_press(outtake_button_)) { setState(states::OUTTAKE); }
+    //else if (primary_->get_digital_new_press(outtake_button_) && score_middle_){ setState(states::OUTTAKEMIDDLE); }
     else if (primary_->get_digital_new_press(outtake_button_)) { setState(states::OUTTAKE); }
 
     else if (
@@ -153,7 +157,9 @@ class Intake
           middle_stage_->brake();
         }
       }
+      
     }
+    
   }
 
   void setState(states new_state) { state = new_state; }
@@ -184,33 +190,43 @@ class Intake
       {
         case states::STORING:
 
-          bottom_stage_->move_voltage(12000 * this->intake_multiplier_);
-          top_stage_->move_voltage(-1000 * this->intake_multiplier_);
-          if (ball_detector.getValue())
-          {
-            middle_stage_->set_encoder_units_all(pros::MotorEncoderUnits::deg);
-            middle_stage_->move_velocity(150 * this->intake_multiplier_);
-            if (std::abs(middle_stage_->get_torque()) > 0.9)
-            {
-              middle_stage_->set_brake_mode_all(pros::MotorBrake::coast);
-              middle_stage_->brake();
-            }
-          }
-          else { middle_stage_->brake(); }
-
+          // bottom_stage_->move_voltage(12000 * this->intake_multiplier_);
+          // top_stage_->move_voltage(-1000 * this->intake_multiplier_);
+          // if (ball_detector.getValue())
+          // {
+          //   middle_stage_->set_encoder_units_all(pros::MotorEncoderUnits::deg);
+          //   middle_stage_->move_velocity(150 * this->intake_multiplier_);
+          //   if (std::abs(middle_stage_->get_torque()) > 0.9)
+          //   {
+          //     middle_stage_->set_brake_mode_all(pros::MotorBrake::coast);
+          //     middle_stage_->brake();
+          //   }
+          // }
+          // else { middle_stage_->brake(); }
+          bottom_stage_->move_voltage(12000 * intake_multiplier_);
+          middle_stage_->move_voltage(12000 * intake_multiplier_);
+          top_stage_->move_voltage(-5000 * intake_multiplier_);
           break;
         case states::SCORE_MIDDLE:
 
           // TODO: Add reversing behavior
           bottom_stage_->move_voltage(12000 * intake_multiplier_);
-          middle_stage_->move_voltage(8000 * intake_multiplier_);
-          top_stage_->move_voltage(-6000 * intake_multiplier_);
+          middle_stage_->move_voltage(6000 * intake_multiplier_);
+          top_stage_->move_voltage(12000 * intake_multiplier_);
           break;
-        case states::OUTTAKE:
+        case states::OUTTAKE: 
 
           bottom_stage_->move_voltage(-12000 * intake_multiplier_);
+          middle_stage_->move_voltage(-8000 * intake_multiplier_);
+          top_stage_->move_voltage(-12000 * intake_multiplier_);
+          // first_stage_lift->extend();
+          break;
+        case states::OUTTAKEMIDDLE:
+
+          bottom_stage_->move_voltage(0 * intake_multiplier_);
           middle_stage_->move_voltage(-12000 * intake_multiplier_);
           top_stage_->move_voltage(-12000 * intake_multiplier_);
+          // first_stage_lift->extend();
           break;
         case states::SCORING:
 

@@ -60,6 +60,7 @@ void autonomous()
 {
   goal_descore_left.extend();
   goal_descore_right.extend();
+  middleGoalFlap.extend();
 
   screen.getCurrentAutoCallback()(screen.getRedTeam());
 }
@@ -93,6 +94,12 @@ void opcontrol()
     {
       goal_descore_left.extend();
       goal_descore_right.toggle();
+    }
+
+    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) { first_stage_lift.extend(); }
+    else if (primary.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_UP))
+    {
+      first_stage_lift.retract();
     }
 
     if (primary.get_digital(pros::E_CONTROLLER_DIGITAL_Y))

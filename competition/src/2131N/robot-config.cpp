@@ -6,20 +6,21 @@
 #include "pros/motor_group.hpp"
 #include "systems/chassis.hpp"
 
-pros::MotorGroup left_motors({-7, 8, -9}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
-pros::MotorGroup right_motors({4, -5, 6}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
+pros::MotorGroup left_motors({-10, -9, -8}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
+pros::MotorGroup right_motors({7, 6, 5}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
 pros::Imu inertial(21);
 
-pros::Motor firstStage(-3);
-pros::Motor secondStage(-1);
-pros::Motor thirdStage(2);
+pros::Motor firstStage(-14);
+pros::Motor secondStage(16);
+pros::Motor thirdStage(12);
 
 pros::Distance btmStorageDetector(18);
 
-pros::adi::Pneumatics goal_descore_right('A', false);
+pros::adi::Pneumatics goal_descore_right('E', false);
 pros::adi::Pneumatics middleGoalFlap('B', false);
-pros::adi::Pneumatics matchload_unloader('C', false);
+pros::adi::Pneumatics matchload_unloader('F', false);
 pros::adi::Pneumatics goal_descore_left('D', false);
+pros::adi::Pneumatics first_stage_lift('C', false);
 
 pros::Controller primary(pros::E_CONTROLLER_MASTER);
 
