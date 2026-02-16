@@ -200,12 +200,12 @@ void teleOp()
 
       if (primary_->get_digital_new_press(score_top_button_))
     {
-      if(scoreSpeedPressed){
-        topIntakeSpeed = 4000;
-      }
-      else{
-        topIntakeSpeed = 4000;
-      }
+      // if(scoreSpeedPressed){
+      //   topIntakeSpeed = 4000;
+      // }
+      // else{
+      //   topIntakeSpeed = 4000;
+      // }
       score_mode_ = !score_mode_;
       if (primary_->get_digital(intake_button_))
       {

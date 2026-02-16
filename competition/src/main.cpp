@@ -5,8 +5,8 @@
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
 
-int topIntakeSpeed;
-bool scoreSpeedPressed = false;
+//int topIntakeSpeed;
+//bool scoreSpeedPressed = false;
 
 /**
  * @brief Runs before everything else.
@@ -118,7 +118,7 @@ void opcontrol()
           17,
           false);
 
-      scoreSpeedPressed = true;
+      //scoreSpeedPressed = true;
     } 
     
     else
@@ -128,7 +128,7 @@ void opcontrol()
           primary.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y),
           17,
           false);
-      scoreSpeedPressed = false;
+      //scoreSpeedPressed = false;
     }
   }
 }

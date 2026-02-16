@@ -61,8 +61,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern int topIntakeSpeed;
-extern bool scoreSpeedPressed;
+//extern int topIntakeSpeed;
+//extern bool scoreSpeedPressed;
 void autonomous(void);
 void initialize(void);
 void disabled(void);
