@@ -10,7 +10,7 @@ pros::MotorGroup left_motors({-10, -9, -8}, pros::v5::MotorGears::blue, pros::v5
 pros::MotorGroup right_motors({7, 6, 5}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
 pros::Imu inertial(21);
 
-pros::Motor firstStage(-14);
+pros::MotorGroup firstStage({-14,-19});
 pros::Motor secondStage(16);
 pros::Motor thirdStage(12);
 
@@ -19,8 +19,9 @@ pros::Distance btmStorageDetector(18);
 pros::adi::Pneumatics goal_descore_right('E', false);
 pros::adi::Pneumatics middleGoalFlap('B', false);
 pros::adi::Pneumatics matchload_unloader('F', false);
-pros::adi::Pneumatics goal_descore_left('D', false);
+pros::adi::Pneumatics middle_lift('D', false);
 pros::adi::Pneumatics first_stage_lift('C', false);
+pros::adi::Pneumatics storage_block('G', false);
 
 pros::Controller primary(pros::E_CONTROLLER_MASTER);
 
@@ -31,7 +32,7 @@ lemlib::OdomSensors sensors{
     nullptr,  //
     &inertial};
 
-lemlib::Drivetrain drivetrain(&left_motors, &right_motors, 10.75, 3.258333332, 400.0, 10.0);
+lemlib::Drivetrain drivetrain(&left_motors, &right_motors, 10.75, 3.258333332, 450.0, 10.0);
 
 // lateral PID controller
 lemlib::ControllerSettings lateral_controller(

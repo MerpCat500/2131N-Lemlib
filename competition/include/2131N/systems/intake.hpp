@@ -12,17 +12,22 @@
 #pragma once
 
 #include "2131N/utils/change_detector.hpp"
+#include "main.h"
 #include "pros/abstract_motor.hpp"
 #include "pros/adi.hpp"
 #include "pros/distance.hpp"
 #include "pros/misc.h"
 #include "pros/motors.hpp"
+#include "pros/motor_group.hpp"
+
 
 class Intake
 {
  public:  // State System
  private:
-  pros::Motor* bottom_stage_;  // Pointer to the bottom stage motor
+
+
+  pros::MotorGroup* bottom_stage_;  // Pointer to the bottom stage motor
   pros::Motor* middle_stage_;  // Pointer to the storage motor
   pros::Motor* top_stage_;     // Pointer to the top stage motor
 
@@ -68,7 +73,7 @@ class Intake
 
  public:
   Intake(
-      pros::Motor* bottom_stage,
+      pros::MotorGroup* bottom_stage,
       pros::Motor* middle_stage,
       pros::Motor* top_stage,
       pros::Distance* bottom_detector,
@@ -102,19 +107,89 @@ class Intake
   {
   }
 
-  void teleOp()
+
+    
+
+  // void teleOp()
+  // {
+  //   if (primary_->get_digital_new_press(intake_button_))
+  //   {
+  //     if (score_middle_) { setState(states::SCORE_MIDDLE); }
+  //     else if (score_mode_) { setState(states::SCORING); }
+  //     else { setState(states::STORING); }
+  //   }
+  //   // else if (primary_->get_digital_new_press(outtake_button_)) { setState(states::OUTTAKE); }
+  //   //else if (primary_->get_digital_new_press(outtake_button_) && score_middle_){ setState(states::OUTTAKEMIDDLE); }
+  //   else if (primary_->get_digital_new_press(outtake_button_)) { setState(states::OUTTAKE); }
+
+  //   else if (
+  //       primary_->get_digital_new_release(intake_button_) ||
+  //       primary_->get_digital_new_release(outtake_button_)
+
+  //   )
+  //   {
+  //     setState(states::STOPPED);
+  //   }
+
+  //   if (primary_->get_digital_new_press(score_top_button_))
+  //   {
+  //     score_middle_ = false;
+  //     middle_stage_gate_->set_value(score_middle_);
+
+  //     score_mode_ = !score_mode_;
+  //     if (primary_->get_digital(intake_button_))
+  //     {
+  //       if (score_middle_) { setState(states::SCORE_MIDDLE); }
+  //       else if (score_mode_) { setState(states::SCORING); }
+  //       else
+  //       {
+  //         setState(states::STORING);
+  //         middle_stage_->brake();
+  //       }
+  //     }
+  //   }
+  //   else if (primary_->get_digital_new_press(score_middle_button))
+  //   {
+  //     score_middle_ = !score_middle_;
+
+  //     middle_stage_gate_->set_value(score_middle_);
+
+  //     if (score_middle_ == false) { score_mode_ = false; }
+  //     if (primary_->get_digital(intake_button_))
+  //     {
+  //       if (score_middle_) { setState(states::SCORE_MIDDLE); }
+  //       else if (score_mode_) { setState(states::SCORING); }
+  //       else
+  //       {
+  //         setState(states::STORING);
+  //         middle_stage_->brake();
+  //       }
+  //     }
+      
+  //   }
+    
+  // }
+
+
+
+
+
+void teleOp()
   {
     if (primary_->get_digital_new_press(intake_button_))
     {
-      if (score_middle_) { setState(states::SCORE_MIDDLE); }
-      else if (score_mode_) { setState(states::SCORING); }
-      else { setState(states::STORING); }
+        //topIntakeSpeed = 12000;
+        if (score_mode_) { setState(states::SCORING); }
+        else { setState(states::STORING); }
     }
-    // else if (primary_->get_digital_new_press(outtake_button_)) { setState(states::OUTTAKE); }
-    //else if (primary_->get_digital_new_press(outtake_button_) && score_middle_){ setState(states::OUTTAKEMIDDLE); }
-    else if (primary_->get_digital_new_press(outtake_button_)) { setState(states::OUTTAKE); }
+    
+    else if (primary_->get_digital_new_press(outtake_button_)) { 
+      //topIntakeSpeed = 12000;
+      setState(states::OUTTAKE); 
+    }
 
     else if (
+      //topIntakeSpeed = 12000;
         primary_->get_digital_new_release(intake_button_) ||
         primary_->get_digital_new_release(outtake_button_)
 
@@ -123,44 +198,27 @@ class Intake
       setState(states::STOPPED);
     }
 
-    if (primary_->get_digital_new_press(score_top_button_))
+      if (primary_->get_digital_new_press(score_top_button_))
     {
-      score_middle_ = false;
-      middle_stage_gate_->set_value(score_middle_);
-
+      if(scoreSpeedPressed){
+        topIntakeSpeed = 4000;
+      }
+      else{
+        topIntakeSpeed = 4000;
+      }
       score_mode_ = !score_mode_;
       if (primary_->get_digital(intake_button_))
       {
-        if (score_middle_) { setState(states::SCORE_MIDDLE); }
-        else if (score_mode_) { setState(states::SCORING); }
-        else
+         if (score_mode_) { setState(states::SCORING); }
+         else
         {
           setState(states::STORING);
           middle_stage_->brake();
         }
       }
     }
-    else if (primary_->get_digital_new_press(score_middle_button))
-    {
-      score_middle_ = !score_middle_;
-
-      middle_stage_gate_->set_value(score_middle_);
-
-      if (score_middle_ == false) { score_mode_ = false; }
-      if (primary_->get_digital(intake_button_))
-      {
-        if (score_middle_) { setState(states::SCORE_MIDDLE); }
-        else if (score_mode_) { setState(states::SCORING); }
-        else
-        {
-          setState(states::STORING);
-          middle_stage_->brake();
-        }
-      }
-      
-    }
-    
   }
+
 
   void setState(states new_state) { state = new_state; }
   void setMiddle(bool v) { middle_stage_gate_->set_value(v); }
@@ -205,14 +263,14 @@ class Intake
           // else { middle_stage_->brake(); }
           bottom_stage_->move_voltage(12000 * intake_multiplier_);
           middle_stage_->move_voltage(12000 * intake_multiplier_);
-          top_stage_->move_voltage(-5000 * intake_multiplier_);
+          top_stage_->move_voltage(-5000 * intake_multiplier_); //-5000
           break;
         case states::SCORE_MIDDLE:
 
           // TODO: Add reversing behavior
-          bottom_stage_->move_voltage(12000 * intake_multiplier_);
-          middle_stage_->move_voltage(6000 * intake_multiplier_);
-          top_stage_->move_voltage(12000 * intake_multiplier_);
+          // bottom_stage_->move_voltage(12000 * intake_multiplier_);
+          // middle_stage_->move_voltage(6000 * intake_multiplier_);
+          // top_stage_->move_voltage(12000 * intake_multiplier_);
           break;
         case states::OUTTAKE: 
 
@@ -223,9 +281,9 @@ class Intake
           break;
         case states::OUTTAKEMIDDLE:
 
-          bottom_stage_->move_voltage(0 * intake_multiplier_);
-          middle_stage_->move_voltage(-12000 * intake_multiplier_);
-          top_stage_->move_voltage(-12000 * intake_multiplier_);
+          bottom_stage_->move_voltage(12000 * intake_multiplier_);
+          middle_stage_->move_voltage(12000 * intake_multiplier_);
+          top_stage_->move_voltage(3000 * intake_multiplier_);
           // first_stage_lift->extend();
           break;
         case states::SCORING:

@@ -5,10 +5,14 @@
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
 
+int topIntakeSpeed;
+bool scoreSpeedPressed = false;
+
 /**
  * @brief Runs before everything else.
  *
  */
+
 void initialize()
 {
   chassis.calibrate(true);
@@ -58,7 +62,7 @@ void competition_initialize() {}
  */
 void autonomous()
 {
-  goal_descore_left.extend();
+  middle_lift.extend();
   goal_descore_right.extend();
   middleGoalFlap.extend();
 
@@ -85,16 +89,20 @@ void opcontrol()
       matchload_unloader.toggle();
     }
 
-    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
+    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2))
     {
-      goal_descore_left.toggle();
-      goal_descore_right.extend();
+      middle_lift.toggle();
+      // goal_descore_right.extend();
     }
     else if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
-      goal_descore_left.extend();
+      // goal_descore_left.extend();
       goal_descore_right.toggle();
     }
+    // else if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1))
+    // {
+    // storage_block.toggle();
+    // }
 
     if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) { first_stage_lift.extend(); }
     else if (primary.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_UP))
@@ -109,7 +117,10 @@ void opcontrol()
           primary.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) * 0.5,
           17,
           false);
-    }
+
+      scoreSpeedPressed = true;
+    } 
+    
     else
     {
       chassis.tank_with_dead_zone(
@@ -117,8 +128,7 @@ void opcontrol()
           primary.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y),
           17,
           false);
+      scoreSpeedPressed = false;
     }
-
-    pros::delay(10);
   }
 }

@@ -37,7 +37,7 @@
 #include "api.h"
 
 /**
- * You should add more #includes here
+ * Yo should add more #includes here
  */
 //#include "okapi/api.hpp"
 
@@ -61,6 +61,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+extern int topIntakeSpeed;
+extern bool scoreSpeedPressed;
 void autonomous(void);
 void initialize(void);
 void disabled(void);

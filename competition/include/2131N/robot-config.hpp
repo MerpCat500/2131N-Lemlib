@@ -10,10 +10,11 @@ extern pros::Controller primary;
 
 extern pros::adi::Pneumatics matchload_unloader;
 
-extern pros::adi::Pneumatics goal_descore_left;
+extern pros::adi::Pneumatics middle_lift;
 extern pros::adi::Pneumatics goal_descore_right;
 extern pros::adi::Pneumatics middleGoalFlap;
 extern pros::adi::Pneumatics first_stage_lift;
+extern pros::adi::Pneumatics storage_block;
 
 extern Chassis chassis;
 

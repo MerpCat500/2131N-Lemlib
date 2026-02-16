@@ -124,7 +124,7 @@ void leftSide(bool is_red_team)
   chassis.moveToRelativePoint(Chassis::fromPolar(-12.5, 48+179), 2000, {.forwards = false, .minSpeed = 25}, false);
 
   
-  goal_descore_left.retract();
+  middle_lift.retract();
   intake.setState(Intake::states::SCORING);
   intake.setMiddle(true);
   pros::delay(1400);
