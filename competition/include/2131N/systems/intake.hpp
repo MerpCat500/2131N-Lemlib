@@ -57,7 +57,7 @@ class Intake
   bool anti_jam_ = false;
   size_t jam_loop_ = 0;
 
-  double intake_multiplier_ = 1.0;
+  double intake_multipliers[3] = {1.0, 1.0, 1.0};
 
  public:
   enum class states
@@ -222,7 +222,7 @@ void teleOp()
 
   void setState(states new_state) { state = new_state; }
   void setMiddle(bool v) { middle_stage_gate_->set_value(v); }
-  void setIntakeMultiplier(double scale) { this->intake_multiplier_ = scale; }
+  void setIntakeMultiplier(double scale1, double scale2, double scale3) { this->intake_multipliers[0] = scale1; this->intake_multipliers[1] = scale2; this->intake_multipliers[2] = scale3; }
   void antiJam(bool anti_jam)
   {
     anti_jam_ = anti_jam;
@@ -261,9 +261,9 @@ void teleOp()
           //   }
           // }
           // else { middle_stage_->brake(); }
-          bottom_stage_->move_voltage(12000 * intake_multiplier_);
-          middle_stage_->move_voltage(12000 * intake_multiplier_);
-          top_stage_->move_voltage(-5000 * intake_multiplier_); //-5000
+          bottom_stage_->move_voltage(12000 * intake_multipliers[0]);
+          middle_stage_->move_voltage(12000 * intake_multipliers[1]);
+          top_stage_->move_voltage(-5000 * intake_multipliers[2]); //-5000
           break;
         case states::SCORE_MIDDLE:
 
@@ -274,23 +274,23 @@ void teleOp()
           break;
         case states::OUTTAKE: 
 
-          bottom_stage_->move_voltage(-12000 * intake_multiplier_);
-          middle_stage_->move_voltage(-8000 * intake_multiplier_);
-          top_stage_->move_voltage(-12000 * intake_multiplier_);
+          bottom_stage_->move_voltage(-12000 * intake_multipliers[0]);
+          middle_stage_->move_voltage(-8000 * intake_multipliers[1]);
+          top_stage_->move_voltage(-12000 * intake_multipliers[2]);
           // first_stage_lift->extend();
           break;
         case states::OUTTAKEMIDDLE:
 
-          bottom_stage_->move_voltage(12000 * intake_multiplier_);
-          middle_stage_->move_voltage(12000 * intake_multiplier_);
-          top_stage_->move_voltage(3000 * intake_multiplier_);
+          bottom_stage_->move_voltage(12000 * intake_multipliers[0]);
+          middle_stage_->move_voltage(12000 * intake_multipliers[1]);
+          top_stage_->move_voltage(3000 * intake_multipliers[2]);
           // first_stage_lift->extend();
           break;
         case states::SCORING:
 
-          bottom_stage_->move_voltage(12000 * intake_multiplier_);
-          middle_stage_->move_voltage(12000 * intake_multiplier_);
-          top_stage_->move_voltage(12000 * intake_multiplier_);
+          bottom_stage_->move_voltage(12000 * intake_multipliers[0]);
+          middle_stage_->move_voltage(12000 * intake_multipliers[1]);
+          top_stage_->move_voltage(12000 * intake_multipliers[2]);
           break;
         case states::STOPPED:
           bottom_stage_->set_brake_mode_all(pros::MotorBrake::coast);
@@ -303,9 +303,9 @@ void teleOp()
           break;
 
         case states::STORE_TOP:
-          bottom_stage_->move_voltage(12000 * intake_multiplier_);
-          middle_stage_->move_voltage(12000 * intake_multiplier_);
-          top_stage_->move_voltage(-1500 * intake_multiplier_);
+          bottom_stage_->move_voltage(12000 * intake_multipliers[0]);
+          middle_stage_->move_voltage(12000 * intake_multipliers[1]);
+          top_stage_->move_voltage(-1500 * intake_multipliers[2]);
           break;
       }
     }

@@ -4,6 +4,7 @@
 #include "autonomous.hpp"
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
+  
 
 //int topIntakeSpeed;
 //bool scoreSpeedPressed = false;
@@ -75,7 +76,7 @@ void autonomous()
  */
 void opcontrol()
 {
-  intake.setIntakeMultiplier(1.0);
+  intake.setIntakeMultiplier(1.0, 1.0, 1.0);
   intake.setMiddle(false);
 
   intake.setState(Intake::states::STOPPED);
@@ -117,8 +118,9 @@ void opcontrol()
           primary.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) * 0.5,
           17,
           false);
-
-      //scoreSpeedPressed = true;
+          
+          intake.setIntakeMultiplier(1.0, 1.0, 0.29);
+      
     } 
     
     else
@@ -128,7 +130,8 @@ void opcontrol()
           primary.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y),
           17,
           false);
-      //scoreSpeedPressed = false;
+      
+          intake.setIntakeMultiplier(1.0, 1.0, 1.0);
     }
   }
 }

@@ -32,7 +32,7 @@ lemlib::OdomSensors sensors{
     nullptr,  //
     &inertial};
 
-lemlib::Drivetrain drivetrain(&left_motors, &right_motors, 10.75, 3.258333332, 450.0, 10.0);
+lemlib::Drivetrain drivetrain(&left_motors, &right_motors, 11.25, 3.258333332, 450.0, 10.0);
 
 // lateral PID controller
 lemlib::ControllerSettings lateral_controller(
@@ -77,10 +77,10 @@ Intake intake(
 
 Screen screen;
 
-DistanceSensor left_distance({-1.0, 5.5}, -M_PI_2, 17);
-DistanceSensor right_distance({-1.5, -4.5}, M_PI_2, 19);
-DistanceSensor back_distance({1.5, 6.5}, M_PI, 20);
-DistanceSensor front_distance({5.25, 7.0}, 0, 16, 40);
+DistanceSensor left_distance({-2, 6.25}, -M_PI_2, 20);
+DistanceSensor right_distance({-3, -6}, M_PI_2, 1);
+DistanceSensor back_distance({4.75, -2.15}, M_PI, 15);
+DistanceSensor front_distance({-6.15, -4.5}, 0, 18, 40);
 
 Mcl<800> mcl_localization(
     &chassis,
