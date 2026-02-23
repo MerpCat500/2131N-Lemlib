@@ -49,9 +49,9 @@ lemlib::ControllerSettings lateral_controller(
 
 // angular PID controller
 lemlib::ControllerSettings angular_controller(
-    2.2,   // proportional gain (kP)
+    1.9,   // proportional gain (kP)
     0.25,  // integral gain (kI)
-    14,    // derivative gain (kD)
+    11,    // derivative gain (kD)
     5,     // anti windup
     2,     // small error range, in degrees
     200,   // small error range timeout, in milliseconds
@@ -77,12 +77,13 @@ Intake intake(
 
 Screen screen;
 
-DistanceSensor left_distance({-2, 6.25}, -M_PI_2, 20);
-DistanceSensor right_distance({-3, -6}, M_PI_2, 1);
-DistanceSensor back_distance({4.75, -2.15}, M_PI, 15);
-DistanceSensor front_distance({-6.15, -4.5}, 0, 18, 40);
+DistanceSensor left_distance({-1.5, 6.25}, -M_PI_2, 20);
+DistanceSensor right_distance({-2.75, -6}, M_PI_2, 1);
+DistanceSensor back_distance({4.75, -2.25}, M_PI, 15);
+DistanceSensor front_distance({-6, -4.5}, 0, 18, 40);
 
 Mcl<800> mcl_localization(
     &chassis,
     std::make_shared<Field>(Field(Point(1, 1), Point(143, 143))),
     std::vector<DistanceSensor*>{&left_distance, &back_distance, &right_distance, &front_distance});
+

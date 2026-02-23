@@ -263,7 +263,7 @@ void teleOp()
           // else { middle_stage_->brake(); }
           bottom_stage_->move_voltage(12000 * intake_multipliers[0]);
           middle_stage_->move_voltage(12000 * intake_multipliers[1]);
-          top_stage_->move_voltage(-5000 * intake_multipliers[2]); //-5000
+          top_stage_->move_voltage(-12000 * intake_multipliers[2]); //-5000
           break;
         case states::SCORE_MIDDLE:
 
