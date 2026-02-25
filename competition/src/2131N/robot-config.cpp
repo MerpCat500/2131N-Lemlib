@@ -8,7 +8,7 @@
 
 pros::MotorGroup left_motors({-10, -9, -8}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
 pros::MotorGroup right_motors({7, 6, 5}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
-pros::Imu inertial(21);
+pros::Imu inertial(17);
 
 pros::MotorGroup firstStage({-14,-19});
 pros::Motor secondStage(16);
@@ -32,7 +32,7 @@ lemlib::OdomSensors sensors{
     nullptr,  //
     &inertial};
 
-lemlib::Drivetrain drivetrain(&left_motors, &right_motors, 11.25, 3.258333332, 450.0, 10.0);
+lemlib::Drivetrain drivetrain(&left_motors, &right_motors, 11.875, 3.21, 450.0, 10.0);
 
 // lateral PID controller
 lemlib::ControllerSettings lateral_controller(
@@ -49,7 +49,7 @@ lemlib::ControllerSettings lateral_controller(
 
 // angular PID controller
 lemlib::ControllerSettings angular_controller(
-    1.9,   // proportional gain (kP)
+    1.7,   // proportional gain (kP)
     0.25,  // integral gain (kI)
     11,    // derivative gain (kD)
     5,     // anti windup

@@ -8,6 +8,9 @@
 
 extern pros::Controller primary;
 
+extern pros::MotorGroup left_motors;
+extern pros::MotorGroup right_motors;
+
 extern pros::adi::Pneumatics matchload_unloader;
 
 extern pros::adi::Pneumatics middle_lift;

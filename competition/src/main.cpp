@@ -63,9 +63,9 @@ void competition_initialize() {}
  */
 void autonomous()
 {
-  middle_lift.extend();
+  //middle_lift.extend();
   goal_descore_right.extend();
-  middleGoalFlap.extend();
+  //middleGoalFlap.extend();
 
   screen.getCurrentAutoCallback()(screen.getRedTeam());
 }
