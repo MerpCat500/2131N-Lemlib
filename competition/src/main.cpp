@@ -24,12 +24,12 @@ void initialize()
       {"Left Side", "Left Side Half Autonomous Win Point danielle's slay queen", leftSide},
       {"Right Side", "Right Side Half Autonomous Win Point", rightSide},
       {"Right Side Final", "Right Side Eye Candy", rightSideFinals},
-      {"Left Side AWP", "Right Side SOLOOOOOOOO Autonomous Win Point ♥", leftSideAwp},
+      {"RIGHT Side AWP ♥", "Right Side SOLOOOOOOOO Autonomous Win Point ♥", leftSideAwp},
       {"Skills", "Skills Autonomous", skills},
       {"SafeSkills", " Safest john deer run Skills Autonomous", Safeskills},
   });
 
-  screen.initialize(6, true);
+  screen.initialize(1, true);
 
   screen.addTelemetries(
       {{"Battery", []() { return std::to_string(pros::battery::get_capacity()); }},
@@ -97,7 +97,6 @@ void opcontrol()
     }
     else if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
-      // goal_descore_left.extend();
       goal_descore_right.toggle();
     }
     // else if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1))

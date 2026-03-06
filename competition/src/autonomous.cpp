@@ -10,7 +10,7 @@
 
 
 void debug(bool is_red_team) { chassis.setPose({0, 0, 0}, false); }
-
+//* right side awp
 void leftSideAwp(bool is_red_team)
 {
 middle_lift.extend();
@@ -21,83 +21,97 @@ middle_lift.extend();
   // ? De-score loader
   matchload_unloader.extend();
   pros::delay(50);  // Wait for the loader to extend before moving used to be 200
-  chassis.moveToPoint(119.75, 24.0, 1500, {.maxSpeed = 60, .minSpeed = 40}, false);
-  chassis.turnToHeading(180.0, 500, {.maxSpeed = 60, .minSpeed = 35}, false);
-   chassis.moveToPoint(119.75, -100.0, 930, {.maxSpeed = 60, .minSpeed = 20}, false);
+  chassis.moveToPoint(115-1, 24.0, 1110, {.maxSpeed = 125, .minSpeed = 78}, false);
+  chassis.turnToHeading(180.0, 640, {.maxSpeed = 60, .minSpeed = 47}, false);
+    chassis.moveToPoint(115-1, -100.0, 1225, {.maxSpeed = 60, .minSpeed = 52}, false);
 
-  // ! Attempt to score
-  auto after_loader = chassis.getPose();
-  chassis.moveToPoint(after_loader.x -1.2, after_loader.y + 36.0, 1000, {.forwards = false, .maxSpeed = 100, .minSpeed = 60});
-  pros::delay(0);
-  chassis.moveToRelativePoint(Chassis::fromPolar(0, -0.23), 100, {.forwards = false, .minSpeed = 50}, false);
+   // ! Attempt to score
+   auto after_loader = chassis.getPose();
+   chassis.moveToPoint(after_loader.x +0.25, after_loader.y + 36.0, 510, {.forwards = false, .maxSpeed = 125, .minSpeed = 123});
+   pros::delay(0);
+   chassis.moveToRelativePoint(Chassis::fromPolar(0, -4), 10, {.forwards = false, .minSpeed = 40}, true);
+   intake.setState(Intake::states::SCORING);
+   pros::delay(300);
+  //intake.setState(Intake::states::OUTTAKE);
+  chassis.moveToRelativePoint(Chassis::fromPolar(0, -0.5), 100, {.forwards = false, .minSpeed = 100}, true);
+   pros::delay(100);
   intake.setState(Intake::states::SCORING);
-  pros::delay(300);
- //intake.setState(Intake::states::OUTTAKE);
-  pros::delay(100);
- intake.setState(Intake::states::SCORING);
-  pros::delay(900);
+   pros::delay(1100);
  
-  matchload_unloader.retract();
-  chassis.cancelMotion();
+   matchload_unloader.retract();
+   chassis.cancelMotion();
 
-  // * Reset to the goal
-  auto left_goal = chassis.getPose();
-  chassis.setPose({119.75, 48 - 7.25 + 2.5, left_goal.theta});
+   // * Reset to the goal
+   auto left_goal = chassis.getPose();
+   chassis.setPose({119.75, 48 - 7.25 + 2.5, left_goal.theta});
 
-   // ? Grab Middle
-  intake.setState(Intake::states::SCORING);
-  chassis.moveToPose(102, 36.5, -90, 1000, {.lead = 0.9, .minSpeed = 40}, false);
-  intake.setState(Intake::states::STORING);
-  chassis.turnToPoint(82, 46.25, 500, {.minSpeed = 30});
-  chassis.moveToPoint(82, 46.25, 1000, {.maxSpeed = 50, .minSpeed = 35}, false);
+    // ? Grab Middle
+   intake.setState(Intake::states::STORING);
+   chassis.moveToPose(102, 36.5, -70, 1200, {.lead = 0.9, .minSpeed = 42}, false);
+   //intake.setState(Intake::states::STORING);
+   chassis.turnToPoint(98, 47.25, 400, {.minSpeed = 45});
+   chassis.moveToPoint(98, 47.25, 1000, {.maxSpeed = 125, .minSpeed = 55}, true);
+   pros::delay(200);
+   matchload_unloader.extend();
+   pros::delay(450);
+   matchload_unloader.retract();
 
-  chassis.turnToPoint(45, 46.25, 500, {.minSpeed = 30});
-  chassis.moveToPoint(45, 46.25, 1300, {.maxSpeed = 60, .minSpeed = 40}, false);
-  chassis.moveToPoint(49, 46.25, 160, {.forwards = false, .maxSpeed = 70, .minSpeed = 50}, false);
+   chassis.turnToPoint(46, 6.5, 500, {.minSpeed = 30});
+   chassis.moveToPoint(46, 46.5, 1300, {.maxSpeed = 125, .minSpeed = 55}, true);
+   pros::delay(600);
+   matchload_unloader.extend();
+   pros::delay(300);
+   //matchload_unloader.retract();
 
-  // * line up to score
-  chassis.turnToPoint(58+4, 58-1, 300, {.forwards = false, .minSpeed = 40});
-  chassis.moveToPoint(58+4, 58-1, 700, {.forwards = false,  .minSpeed = 55}, false);
+   chassis.moveToPoint(49, 46.25, 160, {.forwards = false, .maxSpeed = 90, .minSpeed = 50}, false);
 
-
-  // ! Score Middle
-  middle_lift.retract();
-  intake.setIntakeMultiplier(1.0, 1.0, 0.29);
-  intake.setState(Intake::states::SCORING);
-  intake.setMiddle(true);
-  pros::delay(460);
-  intake.setIntakeMultiplier(1.0, 1.0, 1.0);
-  intake.setState(Intake::states::STORING);
-
-  // ? go to other loader 
-
-  matchload_unloader.extend();
-
-  chassis.turnToPoint(24+7, 24, 500, { .minSpeed = 40});
-  chassis.moveToPoint(24+7, 24, 1300, { .maxSpeed = 90, .minSpeed = 70}, false);
-
-  // * loader clear 
+   // * line up to score
+   chassis.turnToPoint(58+4.7, 58, 260, {.forwards = false, .minSpeed = 45});
+   chassis.moveToPoint(58+4.7, 57.5, 700, {.forwards = false,  .minSpeed = 55}, false);
 
 
-  chassis.turnToHeading(180.0, 500, {.minSpeed = 40}, false);
+   // ! Score Middle
+   middle_lift.retract();
+   intake.setIntakeMultiplier(1.0, 1.0, 0.29);
+   intake.setState(Intake::states::SCORING);
+   intake.setMiddle(true);
+   pros::delay(700);
+   intake.setIntakeMultiplier(1.0, 1.0, 1.0);
+   intake.setState(Intake::states::STORING);
+
+   // ? go to other loader 
+
+   matchload_unloader.extend();
+
+   chassis.turnToPoint(24+9.5, 24, 500, { .minSpeed = 40});
+   chassis.moveToPoint(24+9.5, 24, 1100, { .maxSpeed = 90, .minSpeed = 85}, false);
+
+//   // * loader clear 
+
+
+   chassis.turnToHeading(180.0, 470, {.minSpeed = 45}, false);
   
 
-   chassis.moveToPoint(24+7, -100.0, 650, {.maxSpeed = 60, .minSpeed = 20}, false);
+    chassis.moveToPoint(24+9.75, -100.0, 760, {.maxSpeed = 68, .minSpeed = 59}, false);
 
-  // ! Attempt to score
-//   auto after_loader2 = chassis.getPose();
-//   chassis.moveToPoint(after_loader2.x -1.2, after_loader2.y + 36.0, 1000, {.forwards = false, .maxSpeed = 127, .minSpeed = 90});
-  chassis.moveToRelativePoint(0, 40, 1000, {.forwards = false, .minSpeed = 80}, false);
+//   // ! Attempt to score
+// //   auto after_loader2 = chassis.getPose();
+// //   chassis.moveToPoint(after_loader2.x -1.2, after_loader2.y + 36.0, 1000, {.forwards = false, .maxSpeed = 127, .minSpeed = 90});
+   middle_lift.extend();
+   chassis.moveToRelativePoint(0.2, 48, 545, {.forwards = false, .minSpeed = 125}, false);
   
-  middle_lift.extend();
-  pros::delay(800);
+//   //middle_lift.extend();
+  chassis.moveToRelativePoint(0, 15, 200, {.forwards = false, .minSpeed = 41}, true);
+  
   intake.setState(Intake::states::SCORING);
-  pros::delay(300);
-  matchload_unloader.retract();
- //intake.setState(Intake::states::OUTTAKE);
-  pros::delay(100);
- intake.setState(Intake::states::SCORING);
-  pros::delay(900);
+   pros::delay(800);
+   intake.setState(Intake::states::SCORING);
+   pros::delay(300);
+   matchload_unloader.retract();
+//  //intake.setState(Intake::states::OUTTAKE);
+   pros::delay(100);
+  intake.setState(Intake::states::SCORING);
+   pros::delay(1600);
 
 
  
@@ -187,19 +201,19 @@ void leftSide(bool is_red_team)
   // ? De-score loader
   matchload_unloader.extend();
   pros::delay(200);  // Wait for the loader to extend before moving
-  chassis.moveToPoint(24.75 -.5, 24.0, 2000, {}, false);
+  chassis.moveToPoint(28.25 , 24.0, 2000, {.maxSpeed = 80, .minSpeed = 35}, false);
   chassis.turnToHeading(-180.0, 1000, {}, false);
-  chassis.moveToPoint(24.75-.5, -100.0, 1000, {.maxSpeed = 60, .minSpeed = 20}, false);
+  chassis.moveToPoint(28.25, -100.0, 1000, {.maxSpeed = 80, .minSpeed = 35}, false);
 
   // ! Attempt to score
   auto after_loader = chassis.getPose();
-  chassis.moveToPoint(after_loader.x -1.2, after_loader.y + 36.0, 1600, {.forwards = false, .maxSpeed = 75, .minSpeed = 30});
+  chassis.moveToPoint(after_loader.x , after_loader.y + 36.0, 1600, {.forwards = false, .maxSpeed = 75, .minSpeed = 30});
   pros::delay(600);
   chassis.moveToRelativePoint(Chassis::fromPolar(0, -0.23), 600, {.forwards = false, .minSpeed = 50}, false);
   intake.setState(Intake::states::SCORING);
   pros::delay(300);
  intake.setState(Intake::states::OUTTAKE);
-  pros::delay(300);
+  pros::delay(100);
  intake.setState(Intake::states::SCORING);
   pros::delay(1300);
  
@@ -211,12 +225,15 @@ void leftSide(bool is_red_team)
   chassis.setPose({24+.5,48 - 7.25 + 2.5, left_goal.theta});
 
   // ? Grab Middle
-  intake.setState(Intake::states::SCORING);
-  chassis.moveToPose(42, 36.5, 90, 2000, {.lead = 0.9, .minSpeed = 20}, false);
+  intake.setState(Intake::states::STORING);
+  chassis.moveToPose(43, 36.25, 90, 2000, {.lead = 0.9, .minSpeed = 20}, false);
   intake.setState(Intake::states::STORING);
   chassis.turnToHeading(46, 1000, {.minSpeed = 10}, false);
-  chassis.moveToRelativePoint(Chassis::fromPolar(14 * sqrt(2), 46), 2200, {.maxSpeed = 50}, false);
- pros::delay(500);
+  chassis.moveToRelativePoint(Chassis::fromPolar(14 * sqrt(2), 46), 1000, {.maxSpeed = 50}, true);
+  pros::delay(200);
+  matchload_unloader.extend();
+  
+ pros::delay(1200);
   // ! Score Middle
   chassis.turnToHeading(26 + 179+1.5+10, 1000, {}, false);
   chassis.moveToRelativePoint(Chassis::fromPolar(-13, 210.5), 1200, {.forwards = false, .minSpeed = 35}, false);
@@ -257,6 +274,60 @@ void leftSide(bool is_red_team)
 
 void rightSide(bool is_red_team)
 {
+  middle_lift.extend();
+  intake.setState(Intake::states::STORING);
+
+  chassis.setPose({87.75, 24, 90}, false);
+  
+  // ? De-score loader
+  matchload_unloader.extend();
+  pros::delay(50);  // Wait for the loader to extend before moving used to be 200
+  chassis.moveToPoint(115.25, 24.0, 1500, {.maxSpeed = 80, .minSpeed = 50}, false);
+  chassis.turnToHeading(180.0, 640, {.maxSpeed = 80, .minSpeed = 50}, false);
+    chassis.moveToPoint(115.25, -100.0, 1000, {.maxSpeed = 65, .minSpeed = 30}, false);
+
+   // ! Attempt to score
+   auto after_loader = chassis.getPose();
+   chassis.moveToPoint(after_loader.x +0.25, after_loader.y + 36.0, 1000, {.forwards = false, .maxSpeed = 125, .minSpeed = 60});
+   pros::delay(0);
+   chassis.moveToRelativePoint(Chassis::fromPolar(0, -4), 200, {.forwards = false, .minSpeed = 40}, true);
+   intake.setState(Intake::states::SCORING);
+   pros::delay(300);
+  //intake.setState(Intake::states::OUTTAKE);
+  chassis.moveToRelativePoint(Chassis::fromPolar(0, -0.5), 200, {.forwards = false, .minSpeed = 100}, true);
+   pros::delay(100);
+  intake.setState(Intake::states::SCORING);
+   pros::delay(1100);
+ 
+   matchload_unloader.retract();
+   chassis.cancelMotion();
+
+   // * Reset to the goal
+   auto left_goal = chassis.getPose();
+   chassis.setPose({119.75, 48 - 7.25 + 2.5, left_goal.theta});
+
+    // ? Grab Middle
+   intake.setState(Intake::states::STORING);
+   chassis.moveToPose(102, 36.5, -70, 1200, {.lead = 0.9, .minSpeed = 42}, false);
+   //intake.setState(Intake::states::STORING);
+   chassis.turnToPoint(98, 47.25, 400, {.minSpeed = 45});
+   chassis.moveToPoint(96.25, 47.25, 1000, {.maxSpeed = 125, .minSpeed = 55}, true);
+   pros::delay(200);
+   matchload_unloader.extend();
+   pros::delay(450);
+   matchload_unloader.retract();
+   
+   chassis.turnToHeading(-50, 640, {.maxSpeed = 60, .minSpeed = 47}, false);
+   pros::delay(125);
+   chassis.moveToRelativePoint(-20, 20, 1000, {.forwards = true}, false);
+   chassis.cancelMotion();
+   intake.setState(Intake::states::OUTTAKE);
+   pros::delay(1500);
+   chassis.moveToRelativePoint(21.95, -20, 1000, {.forwards = false}, false);
+   chassis.turnToHeading(0, 640, {.maxSpeed = 60, .minSpeed = 47}, false);
+   goal_descore_right.retract();
+   chassis.moveToRelativePoint(0, 25, 1000, {.forwards = true}, false);
+  /*
    //chassis.moveToRelativePoint(Chassis::fromPolar(3, 0), 1200, {.maxSpeed = 100}, false);
   
   intake.setState(Intake::states::STORING);
@@ -321,32 +392,32 @@ void rightSide(bool is_red_team)
   //pros::delay(400);
   //chassis.turnToHeading(188, 1000);
   //goal_descore_left.extend();
+  */
   
 }
 //does this work
 void skills(bool is_red_team)
 {
-  
-  intake.setState(Intake::states::STORING);
+   intake.setState(Intake::states::STORING);
   chassis.setPose({54.5, 23.25, -90}, false);
 
   // UNLOAD GOAL 1
   matchload_unloader.extend();
-  chassis.moveToPoint(24.-5.75+4, 23.25, 1000, {}, false);
+  chassis.moveToPoint(24.-5.75+5, 23.25, 1000, {}, false);
 
   // Grab Blocks
   chassis.turnToHeading(-180, 1000, {}, false);
-  chassis.moveToPoint(24.5-0.5-5.5 +4, -1000.0, 900, {.maxSpeed = 50, .minSpeed = 22}, false);
+  chassis.moveToPoint(24.5-0.5-5 +4.5, -1000.0, 900, {.maxSpeed = 62, .minSpeed = 22}, false);
   chassis.turnToHeading(-187, 500, {}, false);
-  chassis.moveToPoint(24.5-0.5-5.5 +4, -1000.0, 500, {.maxSpeed = 70, .minSpeed = 32}, false);
-  chassis.turnToHeading(-180, 200, {}, false);
-  chassis.moveToPoint(24.5-0.5-5.5 +4, -1000.0, 600, {.maxSpeed = 70, .minSpeed = 33}, false);
+  chassis.moveToPoint(24.5-0.5-5 +5, -1000.0, 500, {.maxSpeed = 80, .minSpeed = 32}, false);
+  chassis.turnToHeading(-180, 500, {}, false);
+  chassis.moveToPoint(24.5-0.5-5 +5, -1000.0, 800, {.maxSpeed = 75, .minSpeed = 33}, false);
 
   chassis.moveToRelativePoint(0, 20-10, 1000, {.forwards = false}, false);
   intake.setState(Intake::states::STORING);
   matchload_unloader.retract();
   chassis.turnToHeading(-100+5, 600, {}, false);
-  chassis.moveToRelativePoint(-13.5, 0, 700, {}, false);
+  chassis.moveToRelativePoint(-16.5, 0, 710, {}, false);
   
 
   // ! RESET TO LEFT GOAL 1 using mcl
@@ -360,7 +431,7 @@ void skills(bool is_red_team)
       left_goal_1.theta);
 
    // Go to loader 2
-chassis.turnToHeading(-5, 600, {}, false);
+chassis.turnToHeading(-7, 600, {}, false);
 
  // !s RESET TO LEFT GOAL 1 using mcl
   mcl_localization.reset_particles({12, 34-10}, 8.0);
@@ -372,322 +443,191 @@ chassis.turnToHeading(-5, 600, {}, false);
       mcl_localization.get_point_estimate().y,
       left_goal_11.theta);
 
-chassis.moveToPoint(7.35-2, 64, 2000, {.minSpeed = 10}, false);
-   pros::delay(100);
-   chassis.turnToPoint(9.1-2.25, 96, 700, {.minSpeed = 10}, false);//8.75
-    chassis.moveToPoint(9.1-2.25, 96, 1300, {.minSpeed = 10}, false);
- chassis.turnToPoint(18.65, 113, 800, {.minSpeed = 30}, false);
- chassis.moveToPoint(18.7, 113, 900, {}, false);
+ chassis.moveToPoint(7.35-2, 64, 2000, {.minSpeed = 10}, false);
+ 
+ pros::delay(100);
+    chassis.turnToPoint(9.1-2.25, 96, 700, {.minSpeed = 10}, false);
+     chassis.moveToPoint(9.1-2.25, 96, 1300, {.minSpeed = 10}, false);
+  chassis.turnToPoint(19.85, 113-3, 800, {.minSpeed = 30}, false);
+  chassis.moveToPoint(20.825, 113-3, 900, {}, false);
 
-   //* Score Loader 1
-    chassis.turnToHeading(0, 600, {}, false);
-  //intake.setState(Intake::states::STORING);  // STops bottom block from yeeting out
+    //* Score Loader 1
+     chassis.turnToHeading(-0.2, 600, {}, false);
+
   middle_lift.extend();
-  chassis.moveToRelativePoint(0.35, -23.25-.4, 1000, {.forwards = false, .maxSpeed = 68}, true);
+
+  chassis.moveToPoint(19.5, 88, 1000, {.forwards = false, .maxSpeed = 61.5, .minSpeed = 22}, true);
   pros::delay(450);
   intake.setState(Intake::states::SCORING);
-  intake.antiJam(true);
-  pros::delay(2200);
-
-//   // ! PIck up strays
-   //intake.setState(Intake::states::STORING);
-   //  chassis.moveToRelativePoint(0, 6, 800, {.minSpeed = 30}, false);
-//   chassis.moveToRelativePoint(0, -6, 1000, {.forwards = false, .minSpeed = 30}, false);
-
-//   // Score again
-//   intake.setState(Intake::states::SCORING);
-//   intake.antiJam(true);
-//   pros::delay(2000);
+  pros::delay(600);
+  intake.setState(Intake::states::OUTTAKE);
+  pros::delay(100);
+  intake.setState(Intake::states::SCORING);
+  pros::delay(1400);
   intake.setState(Intake::states::STORING);
   //* grabbing 2nd loader
-
+ 
   matchload_unloader.extend();
   pros::delay(200);
-  chassis.moveToPoint(18.675, 1000, 1000, {.maxSpeed = 63, .minSpeed = 22}, true);
+  chassis.moveToPoint(18.35, 1000, 1000, {.maxSpeed = 61.5, .minSpeed = 22}, true);
   pros::delay(200);
   middle_lift.retract();
   pros::delay(1500);
-  //chassis.turnToHeading(-10, 500, {.minSpeed = 20});
-  chassis.moveToPoint(18.7, 1000, 500, {.maxSpeed = 60, .minSpeed = 20}, false);
+
+  chassis.moveToPoint(18.15, 1000, 500, {.maxSpeed = 60, .minSpeed = 20}, false);
   chassis.turnToHeading(11, 500, {.minSpeed = 20});
-  chassis.moveToPoint(18.7, 1000, 500, {.maxSpeed = 70, .minSpeed = 30}, false);
+  chassis.moveToPoint(18.6, 1000, 500, {.maxSpeed = 70, .minSpeed = 30}, false);
   chassis.turnToHeading(0, 500, {.minSpeed = 20});
   chassis.moveToPoint(18.6, 500, 500, {.maxSpeed = 70, .minSpeed = 35}, false);
   pros::delay(1000);
    // SCORE GOAL 2
 //*scoring second loader
- //chassis.moveToRelativePoint(-0.5, -26, 1800, {.forwards = false, .maxSpeed = 70}, true);
+ 
  middle_lift.extend();
- chassis.moveToPoint(18.7, 89, 700, {.forwards = false, .maxSpeed = 70, .minSpeed = 30,}, false);
+ chassis.moveToPoint(18.75, 89, 700, {.forwards = false, .maxSpeed = 70, .minSpeed = 30,}, false);
 
  pros::delay(300);
  pros::delay(600);
  intake.setState(Intake::states::SCORING);
  chassis.moveToRelativePoint(0, -26, 1000, {.forwards = false, .maxSpeed = 80}, true);
   intake.antiJam(true);
-   pros::delay(2600);
-//   chassis.moveToRelativePoint(0, 6, 800, {.minSpeed = 30}, false);
-//   chassis.moveToRelativePoint(-.25, -6, 1000, {.forwards = false, .minSpeed = 30}, false);
-//   intake.antiJam(true);
-//   pros::delay(1800);
+   pros::delay(2800);
+
    matchload_unloader.retract();
    intake.setState(Intake::states::SCORING);
   // ! RESET TO LEFT GOAL 2
   auto left_goal_2 = chassis.getPose();
   chassis.setPose(24.8, 104, left_goal_2.theta);
-//   matchload_unloader.extend();
-
-//   chassis.moveToRelativePoint(0, 7, 800, {.minSpeed = 30}, false);
-//   chassis.turnToPoint(46, 121, 1000, {.minSpeed = 10}, false);
-//   chassis.moveToPoint(46, 121, 1000, {.maxSpeed = 72}, false);
-//   chassis.turnToPoint(46, 20, 1000, {.minSpeed = 10}, false);
-//   chassis.moveToPoint(46, 20, 2000, {.maxSpeed = 72}, true);
-//   matchload_unloader.retract();
-//   pros::delay(1000);
-//   chassis.turnToPoint(80, 0, 1000, {.minSpeed = 10}, false);
-
-
-
-
-  /*chassis.turnToHeading(0, 500, {.minSpeed = 20});
   intake.setState(Intake::states::STORING);
-  matchload_unloader.extend();
-  chassis.moveToPoint(125, 1000, 1000, {.maxSpeed = 65}, false);
-  pros::delay(500);
-  chassis.moveToPoint(125, 1000, 1000, {.maxSpeed = 65}, false);
-  pros::delay(500);
-  chassis.moveToPoint(125, 1000, 1000, {.maxSpeed = 65}, false);
-  pros::delay(500);
-  chassis.moveToPoint(125, 1000, 1000, {}, false);
-  pros::delay(500);
-  chassis.moveToPoint(125, 95, 1000, {.forwards = false}, false);
-  intake.setState(Intake::states::SCORING);
-  */
-//   // GO TO GOAL 3
+  //* moving off goal 1
+  chassis.moveToRelativePoint(0, 8, 800, {.minSpeed = 10}, false);
+
+  ///chassis.turnToHeading(90, 500, {.minSpeed = 10});
+  middle_lift.retract();
+  //*clearing park
+ // chassis.moveToPoint(110.5, 119, 2500, {.maxSpeed = 77, .minSpeed = 35}, false);
+  chassis.turnToHeading(40, 500, {.minSpeed = 10});
+  chassis.moveToPoint(46, 140, 700, {.forwards = true, .maxSpeed = 70, .minSpeed = 30,}, false);
+  chassis.moveToPoint(49, 155, 800, {.forwards = true, .maxSpeed = 70, .minSpeed = 30,}, false);
+  chassis.turnToHeading(40, 500, {.minSpeed = 10});
   
-  chassis.moveToRelativePoint(-1.5, 8, 800, {.minSpeed = 10}, false);
-//*   new clearing park stuff
-  chassis.turnToPoint(38, 137,700, {.minSpeed = 10}, true);
-  chassis.moveToPoint(38, 137, 800, {.minSpeed = 10}, false);
-
-  chassis.turnToPoint(43.5, 144.5, 600, {.minSpeed = 10}, true);
-  chassis.moveToPoint(43.5, 144.5, 700, {.minSpeed = 10}, false);
-
-  chassis.turnToPoint(93, 157.5, 700, {.minSpeed = 10}, true);
-  intake.setState(Intake::states::STORING);
-
-
-//   left_motors.move_velocity(78);
-//   right_motors.move_velocity(78);
-//   pros::delay(360);
-//   matchload_unloader.extend();
-//   pros::delay(2000);
-//   matchload_unloader.retract();
-//   do{
-//     front_distance.update(Point(chassis.getPose().x, chassis.getPose().y), chassis.getPose().theta);
-//     pros::delay(20);
-//   } while (front_distance.get_distance_reading() > 40);
-//   left_motors.brake();
-//   right_motors.brake();
-
-
-  chassis.moveToRelativePoint(100, 16, 2100, {.forwards = true, .maxSpeed = 75, .minSpeed = 35}, true);
-  pros::delay(360);
-  matchload_unloader.extend();
-  pros::delay(2000);
+  chassis.moveToRelativePoint(100, 8, 800, {.maxSpeed = 75, .minSpeed = 37}, true);
+  pros::delay(200);
   matchload_unloader.retract();
-  chassis.moveToRelativePoint(15.5, 0, 800, {.forwards = true, .maxSpeed = 90, .minSpeed = 38}, true);
-   // !s RESET TO LEFT GOAL 1 using mcl
-  mcl_localization.reset_particles({98, 140}, 8.0);
-  pros::delay(800);
+  pros::delay(1200);
+  matchload_unloader.extend();
+  pros::delay(200000000);
+  //* emptying loader 3
+  chassis.turnToHeading(0, 500, {.minSpeed = 10});
+  matchload_unloader.extend();
+  pros::delay(200);
+  
+  chassis.moveToPoint(111.35, 1200, 900, {.maxSpeed = 62, .minSpeed = 35}, false);
+  pros::delay(600);
+  chassis.moveToPoint(111.35, 1200, 900, {.maxSpeed = 80, .minSpeed = 35}, false);
+  pros::delay(600);
+  chassis.moveToPoint(111.35, 1200, 900, {.maxSpeed = 70, .minSpeed = 35}, false);
+  pros::delay(700);
 
-  auto right_goal_1 = chassis.getPose();
-  chassis.setPose(
-      mcl_localization.get_point_estimate().x,
-      mcl_localization.get_point_estimate().y,
-      right_goal_1.theta);
-
-    
-
-chassis.moveToRelativePoint(5, 0, 1500, {.forwards = true, .maxSpeed = 90, .minSpeed = 38}, true);
-
-//*correcting after the park clear
- // !s RESET TO LEFT GOAL 1 using mcl
-  mcl_localization.reset_particles({103, 140}, 8.0);
-  pros::delay(900);
-
-  auto right_goal_11 = chassis.getPose();
-  chassis.setPose(
-      mcl_localization.get_point_estimate().x,
-      mcl_localization.get_point_estimate().y,
-      right_goal_11.theta);
-
-pros::delay(400);
-
-chassis.turnToPoint(131, 121, 1000, {.minSpeed = 10}, false);
-chassis.moveToPoint(131, 121, 1500, {.minSpeed = 10}, false);
-chassis.turnToHeading(0, 800, {.minSpeed = 20});
- chassis.moveToRelativePoint(0.15, -23, 1000, {.forwards = false, .maxSpeed = 74}, false);
-
- //* scoring the few park blocks
- intake.setState(Intake::states::SCORING);
- pros::delay(1500);
- intake.setState(Intake::states::STORING);
- matchload_unloader.extend();
-
- //* gathering 3rd loader blocks
-  chassis.moveToRelativePoint(0, 1000, 700, {.forwards = true, .maxSpeed = 72}, false);
- pros::delay(600);
-  chassis.moveToRelativePoint(0, 1000, 700, {.forwards = true, .maxSpeed = 72}, false);
- pros::delay(700);
-  chassis.moveToRelativePoint(0, 1000, 700, {.forwards = true, .maxSpeed = 72}, false);
- pros::delay(800);
- chassis.moveToRelativePoint(0.08, -40, 850, {.forwards = false, .maxSpeed = 65}, false);
- pros::delay(500);
-
- //*Score 3rd loaders
-intake.setState(Intake::states::SCORING);
-pros::delay(500);
-intake.setState(Intake::states::OUTTAKE);
-pros::delay(100);
-intake.setState(Intake::states::SCORING);
-pros::delay(800);
-matchload_unloader.retract();
-
-
-
-
-
-
-
-
-
-
-//   // GO TO GOAL 3 b
-//   chassis.turnToPoint(112+3, 107, 1000, {.minSpeed = 10}, true);
-
-//   // Loader 3
-//   chassis.moveToPoint(112+3, 107, 2000, {.minSpeed = 10}, false);
-
-//   chassis.turnToHeading(0, 1200, {}, false);
-//   matchload_unloader.extend();
-//   pros::delay(800);
-//   chassis.moveToPoint(114.3, 1000, 2000, {.maxSpeed = 60, .minSpeed = 23}, false);
-//   chassis.turnToHeading(10, 500, {.minSpeed = 20});
-//   chassis.turnToHeading(-10, 600, {.minSpeed = 20});
-//   chassis.turnToHeading(0, 800, {.minSpeed = 21});
-
-//   // GO to other side
-//   chassis.moveToRelativePoint(0.3, -12, 1500, {.forwards = false}, false);
-//   matchload_unloader.retract();
-//   chassis.turnToHeading(90, 1800, {.minSpeed = 10}, false);
-//   chassis.moveToRelativePoint(12+1.5, 0, 2000, {}, false);
-
-//   // ! RESET TO LEFT GOAL 2 using mcl (without back sensor)
-  mcl_localization.reset_particles({134, 120.5}, 8.0);
+  //* moving off loader
+  chassis.moveToRelativePoint(0, -15, 1000, {.forwards = false, .minSpeed = 10}, false);
+  matchload_unloader.retract();
+  chassis.turnToHeading(90, 700, {.minSpeed = 10});
+  chassis.moveToRelativePoint(32, 0, 1000, {.minSpeed = 10}, false);
+     // !s RESET TO RIGHT WALL 1 using mcl
+  mcl_localization.reset_particles({132, 103}, 8.0);
   pros::delay(750);
 
-  auto left_goal_3 = chassis.getPose();
+  auto right_wall_11 = chassis.getPose();
   chassis.setPose(
       mcl_localization.get_point_estimate().x,
       mcl_localization.get_point_estimate().y,
-      left_goal_3.theta);
+      right_wall_11.theta);
 
+
+  chassis.turnToHeading(150, 500, {.minSpeed = 10});
+
+   // !s RESET TO RIGHT WALL 1 using mcl
+  mcl_localization.reset_particles({124, 103}, 8.0);
+  pros::delay(750);
+
+  auto right_wall_2 = chassis.getPose();
+  chassis.setPose(
+      mcl_localization.get_point_estimate().x,
+      mcl_localization.get_point_estimate().y,
+      right_wall_2.theta);
+
+  //* driving down the alley to home lands
+  
+ 
+  chassis.moveToRelativePoint(12, -110, 3000, {.forwards = true,.maxSpeed = 81, .minSpeed = 10}, false);
+
+   // !s RESET TO RIGHT WALL 2 using mcl
+  mcl_localization.reset_particles({126, 10}, 8.0);
+  pros::delay(750);
+
+  auto right_wall_3 = chassis.getPose();
+  chassis.setPose(
+      mcl_localization.get_point_estimate().x,
+      mcl_localization.get_point_estimate().y,
+      right_wall_3.theta);
+
+  chassis.moveToRelativePoint(-14, 21, 1000, {.forwards = false, .minSpeed = 10}, false);
+  chassis.turnToHeading(180, 700, {.minSpeed = 10});
+  middle_lift.extend();
+
+  //* scoring goal 3
+
+  chassis.moveToPoint(120, 65, 1000, {.forwards = false, .maxSpeed = 70, .minSpeed = 35}, false);
+  intake.setState(Intake::states::SCORING);
+  pros::delay(600);
+  intake.setState(Intake::states::OUTTAKE);
+  pros::delay(100);
+  intake.setState(Intake::states::SCORING);
+  pros::delay(1300);
+
+  matchload_unloader.extend();
+  intake.setState(Intake::states::STORING);
+
+  //*grabbing 4th loader
+  chassis.moveToPoint(124, -100, 1000, {.forwards = true, .maxSpeed = 61, .minSpeed = 35}, false);
+  pros::delay(500);
+  chassis.moveToPoint(123.7, -100, 1000, {.forwards = true, .maxSpeed = 75, .minSpeed = 35}, false);
+  pros::delay(500);
+  chassis.moveToPoint(123.5, -100, 1000, {.forwards = true, .maxSpeed = 72, .minSpeed = 35}, false);
+  pros::delay(600);
+
+  //* scoring 4th loader
+  chassis.moveToRelativePoint(-0.25, 66, 1000, {.forwards = false, .maxSpeed = 65}, false);
+  intake.setState(Intake::states::SCORING);
+  pros::delay(600);
+   intake.setState(Intake::states::SCORING);
+  pros::delay(200);
+   intake.setState(Intake::states::SCORING);
+  pros::delay(900);
+  matchload_unloader.retract();
+
+  // ! RESET TO Right GOAL 2
+  pros::delay(300);
+  auto right_goal_4 = chassis.getPose();
+  chassis.setPose(125.2, 45, right_goal_4.theta);
+
+  //* moving off goal
+  chassis.moveToPoint(102, -30, 800, {.forwards = true, .maxSpeed = 61.5, .minSpeed = 35}, false);
+  chassis.moveToPoint(102, -50, 850, {.forwards = true, .maxSpeed = 61.5, .minSpeed = 35}, false);
+  chassis.turnToHeading(-130, 700, {.minSpeed = 10});
+
+  //* clearing park
+  intake.setState(Intake::states::STORING);
+ chassis.moveToRelativePoint(-65, -20, 1000, {.forwards = true, .maxSpeed = 71}, true);
+ pros::delay(450);
+ matchload_unloader.extend();
+ pros::delay(350);
+ chassis.moveToRelativePoint(-52, -5, 1100, {.forwards = true, .minSpeed = 35}, false);
+ matchload_unloader.retract();
+ chassis.moveToRelativePoint(3, 0, 1000, {.forwards = false, .minSpeed = 35}, false);
   
 
-//   chassis.moveToPoint(142, 120, 1000, {.minSpeed = 10}, false);
-//   chassis.turnToHeading(2, 1000, {}, false);
-//   //* driving across the alley to home land
-chassis.moveToRelativePoint(0, 15, 1000, {.forwards = true, .maxSpeed = 72}, false);
-chassis.turnToHeading(90, 1000, {}, false);
-chassis.moveToRelativePoint(15, 0, 1000, {.forwards = true, .maxSpeed = 72}, false);
- // !* RESET TO Right GOAL 1 using mcl
-  mcl_localization.reset_particles({140, 140}, 8.0);
-  pros::delay(700);
-
-  auto right_goal_2 = chassis.getPose();
-  chassis.setPose(
-      mcl_localization.get_point_estimate().x,
-      mcl_localization.get_point_estimate().y,
-      right_goal_2.theta);
-
-chassis.turnToHeading(180, 700, {}, false);
-
- // * RESET TO Right GOAL 2 using mcl
-  mcl_localization.reset_particles({140, 140}, 8.0);
-  pros::delay(700);
-
-  auto right_goal_22 = chassis.getPose();
-  chassis.setPose(
-      mcl_localization.get_point_estimate().x,
-      mcl_localization.get_point_estimate().y,
-      right_goal_22.theta);
-
-
-chassis.moveToPoint(146, 30, 2000, {.forwards = true, .maxSpeed = 75}, false);
-chassis.moveToPoint(121, 30, 2000, {.forwards = true, .maxSpeed = 75}, false);
-chassis.turnToHeading(180, 1000, {}, false);
-
-
-//   //chassis.moveToRelativePoint(3, -100, 2000, {.forwards = false, .maxSpeed = 69}, false);
-//   chassis.moveToPoint(127, 42, 2000, {.forwards = false, .minSpeed = 10}, false);
-//   chassis.turnToPoint(180, 0, 1000, {.minSpeed = 10}, false);
-  
-  //chassis.turnToPoint(137.2, 30, 1000, {.minSpeed = 10}, false);
-  //chassis.moveToPoint(137.2, 30, 1500, {.maxSpeed = 66}, false);
-//   // Drive down the alley
-//   chassis.turnToPoint(141, 48, 1500, {.minSpeed = 20}, false);
-//   chassis.moveToPoint(141, 48, 1500, {.minSpeed = 10}, false);
-
-//   // Start aligning to score
-//   chassis.turnToPoint(124.5, 24, 1500, {.minSpeed = 50}, false);
-//   chassis.moveToPoint(124.5, 24, 1500, {}, false);
-//   chassis.turnToHeading(180, 1000, {}, false);
-
-//   // SCORE GOAL 3
-//   mcl_localization.reset_particles({123, 24}, 8.0);
-//   pros::delay(500);
-
-//   auto right_goal_1 = chassis.getPose();
-//   chassis.setPose(
-//       mcl_localization.get_point_estimate().x,
-//       mcl_localization.get_point_estimate().y,
-//       right_goal_1.theta);
-
-//   chassis.moveToRelativePoint(1, 38, 1800, {.forwards = false, .maxSpeed = 100}, false);
-//   //chassis.moveToPoint(124 -0.5, 24 +38, 1500, {.forwards = false}, false);
-//   intake.setState(Intake::states::SCORING);
-//   intake.antiJam(true);
-//   pros::delay(2000);
-//   intake.antiJam(true);
-//   pros::delay(1500);
-//   intake.setState(Intake::states::STORING);
-
-//   // LOADER 4
-//   matchload_unloader.extend();
-//   chassis.moveToRelativePoint(-1.6, -18.0, 800, {.maxSpeed = 90, .minSpeed = 40}, false);
-//   chassis.moveToRelativePoint(-1.6, -1000, 2500, {.maxSpeed = 50, .minSpeed = 20}, false);
-
-
-//   // Score Goal 4
-//   chassis.moveToRelativePoint(3.7, 38, 1800, {.forwards = false, .maxSpeed = 100}, false);
-//   //hassis.moveToPoint(124 -0.5, 24 +38, 1500, {.forwards = false}, false);
-//   intake.setState(Intake::states::SCORING);
-//   intake.antiJam(true);
-//   pros::delay(900);
-//   intake.antiJam(true);
-//   pros::delay(1200);
-//   intake.setState(Intake::states::STORING);
-
-//   // Park
-//   matchload_unloader.retract();
-//   auto right_goal_2 = chassis.getPose(false);
-//   chassis.setPose(120, 40, right_goal_2.theta);
-//   chassis.moveToPoint(108, 14-0.5, 2000, {}, false);
-//   chassis.turnToHeading(-100, 1000);
-//   chassis.moveToRelativePoint(Chassis::fromPolar(50, -100), 2000, {.minSpeed = 80}, false);
-//   chassis.moveToRelativePoint(
-//       Chassis::fromPolar(-5, -100), 2000, {.forwards = false, .minSpeed = 60}, false);
 }
 
 void rightSideFinals(bool is_red_team)
@@ -733,21 +673,21 @@ void Safeskills(bool is_red_team)
 
   // UNLOAD GOAL 1
   matchload_unloader.extend();
-  chassis.moveToPoint(24.-5.75+4, 23.25, 1000, {}, false);
+  chassis.moveToPoint(24.-5.75+5, 23.25, 1000, {}, false);
 
   // Grab Blocks
   chassis.turnToHeading(-180, 1000, {}, false);
-  chassis.moveToPoint(24.5-0.5-5 +4.8, -1000.0, 900, {.maxSpeed = 50, .minSpeed = 22}, false);
+  chassis.moveToPoint(24.5-0.5-5 +4.5, -1000.0, 900, {.maxSpeed = 62, .minSpeed = 22}, false);
   chassis.turnToHeading(-187, 500, {}, false);
-  chassis.moveToPoint(24.5-0.5-5 +4.8, -1000.0, 500, {.maxSpeed = 70, .minSpeed = 32}, false);
-  chassis.turnToHeading(-180, 200, {}, false);
-  chassis.moveToPoint(24.5-0.5-5 +4.8, -1000.0, 600, {.maxSpeed = 70, .minSpeed = 33}, false);
+  chassis.moveToPoint(24.5-0.5-5 +5, -1000.0, 500, {.maxSpeed = 80, .minSpeed = 32}, false);
+  chassis.turnToHeading(-180, 500, {}, false);
+  chassis.moveToPoint(24.5-0.5-5 +5, -1000.0, 800, {.maxSpeed = 75, .minSpeed = 33}, false);
 
   chassis.moveToRelativePoint(0, 20-10, 1000, {.forwards = false}, false);
   intake.setState(Intake::states::STORING);
   matchload_unloader.retract();
   chassis.turnToHeading(-100+5, 600, {}, false);
-  chassis.moveToRelativePoint(-14.2, 0, 700, {}, false);
+  chassis.moveToRelativePoint(-16.5, 0, 710, {}, false);
   
 
   // ! RESET TO LEFT GOAL 1 using mcl
@@ -761,7 +701,7 @@ void Safeskills(bool is_red_team)
       left_goal_1.theta);
 
    // Go to loader 2
-chassis.turnToHeading(-5, 600, {}, false);
+chassis.turnToHeading(-7, 600, {}, false);
 
  // !s RESET TO LEFT GOAL 1 using mcl
   mcl_localization.reset_particles({12, 34-10}, 8.0);
@@ -772,38 +712,65 @@ chassis.turnToHeading(-5, 600, {}, false);
       mcl_localization.get_point_estimate().x,
       mcl_localization.get_point_estimate().y,
       left_goal_11.theta);
+  //chassis.turnToHeading(-31, 400, {}, false);
+  //chassis.moveToRelativePoint(-23.5, 200, 2500, {.forwards = true, .maxSpeed = 85}, false);
+ chassis.moveToPoint(7.35-2, 64, 2000, {.minSpeed = 10}, false);
+  /*
+// !s RESET TO LEFT GOAL 1 using mcl
+  mcl_localization.reset_particles({12, 134}, 8.0);
+  pros::delay(650);
 
-chassis.moveToPoint(7.35-2, 64, 2000, {.minSpeed = 10}, false);
-   pros::delay(100);
-   chassis.turnToPoint(9.1-2.25, 96, 700, {.minSpeed = 10}, false);//8.75
-    chassis.moveToPoint(9.1-2.25, 96, 1300, {.minSpeed = 10}, false);
- chassis.turnToPoint(19.65, 113-3, 800, {.minSpeed = 30}, false);
- chassis.moveToPoint(19.7, 113-3, 900, {}, false);
+  auto left_wall_11 = chassis.getPose();
+  chassis.setPose(
+      mcl_localization.get_point_estimate().x,
+      mcl_localization.get_point_estimate().y,
+      left_wall_11.theta);
 
-   //* Score Loader 1
-    chassis.turnToHeading(0, 600, {}, false);
+  chassis.moveToRelativePoint(0, 2, 1000, {.forwards = false, .maxSpeed = 72}, false);
+
+  // !s RESET TO LEFT GOAL 1 using mcl
+  mcl_localization.reset_particles({12, 134}, 8.0);
+  pros::delay(650);
+
+  auto left_wall_111 = chassis.getPose();
+  chassis.setPose(
+      mcl_localization.get_point_estimate().x,
+      mcl_localization.get_point_estimate().y,
+      left_wall_111.theta);
+      */
+ pros::delay(100);
+    chassis.turnToPoint(9.1-2.25, 96, 700, {.minSpeed = 10}, false);
+     chassis.moveToPoint(9.1-2.25, 96, 1300, {.minSpeed = 10}, false);
+  chassis.turnToPoint(19.85, 113-3, 800, {.minSpeed = 30}, false);
+  chassis.moveToPoint(20.825, 113-3, 900, {}, false);
+
+    //* Score Loader 1
+     chassis.turnToHeading(-0.2, 600, {}, false);
 
   middle_lift.extend();
-  chassis.moveToRelativePoint(0.35, -23.25-.4, 1000, {.forwards = false, .maxSpeed = 68}, true);
+  //chassis.moveToPoint(34, -50, 1000, {.forwards = false, .maxSpeed = 61.5, .minSpeed = 22}, false);
+  //chassis.moveToRelativePoint(0, -5, 1000, {.forwards = false, .maxSpeed = 72}, true);
+  chassis.moveToPoint(19.5, 88, 1000, {.forwards = false, .maxSpeed = 61.5, .minSpeed = 22}, true);
   pros::delay(450);
   intake.setState(Intake::states::SCORING);
-  intake.antiJam(true);
-  pros::delay(2200);
-
-
+  pros::delay(600);
+  intake.setState(Intake::states::OUTTAKE);
+  pros::delay(100);
+  intake.setState(Intake::states::SCORING);
+  pros::delay(1400);
   intake.setState(Intake::states::STORING);
   //* grabbing 2nd loader
-
+ 
   matchload_unloader.extend();
   pros::delay(200);
-  chassis.moveToPoint(18.6, 1000, 1000, {.maxSpeed = 63, .minSpeed = 22}, true);
+  chassis.moveToPoint(18.35, 1000, 1000, {.maxSpeed = 61.5, .minSpeed = 22}, true);
   pros::delay(200);
   middle_lift.retract();
   pros::delay(1500);
 
-  chassis.moveToPoint(18.7, 1000, 500, {.maxSpeed = 60, .minSpeed = 20}, false);
+  chassis.moveToPoint(18.35, 1000, 500, {.maxSpeed = 60, .minSpeed = 20}, false);
   chassis.turnToHeading(11, 500, {.minSpeed = 20});
-  chassis.moveToPoint(18.7, 1000, 500, {.maxSpeed = 70, .minSpeed = 30}, false);
+  chassis.moveToPoint(18.6, 1000, 500, {.maxSpeed = 70, .minSpeed = 30}, false);
   chassis.turnToHeading(0, 500, {.minSpeed = 20});
   chassis.moveToPoint(18.6, 500, 500, {.maxSpeed = 70, .minSpeed = 35}, false);
   pros::delay(1000);
@@ -811,41 +778,48 @@ chassis.moveToPoint(7.35-2, 64, 2000, {.minSpeed = 10}, false);
 //*scoring second loader
  
  middle_lift.extend();
- chassis.moveToPoint(18.675, 89, 700, {.forwards = false, .maxSpeed = 70, .minSpeed = 30,}, false);
+ chassis.moveToPoint(18.75, 89, 700, {.forwards = false, .maxSpeed = 70, .minSpeed = 30,}, false);
 
  pros::delay(300);
  pros::delay(600);
  intake.setState(Intake::states::SCORING);
  chassis.moveToRelativePoint(0, -26, 1000, {.forwards = false, .maxSpeed = 80}, true);
   intake.antiJam(true);
-   pros::delay(2600);
+   pros::delay(2800);
 
    matchload_unloader.retract();
    intake.setState(Intake::states::SCORING);
   // ! RESET TO LEFT GOAL 2
   auto left_goal_2 = chassis.getPose();
   chassis.setPose(24.8, 104, left_goal_2.theta);
-
+  intake.setState(Intake::states::STORING);
   //* moving off goal 1
   chassis.moveToRelativePoint(0, 8, 800, {.minSpeed = 10}, false);
 
   chassis.turnToHeading(90, 500, {.minSpeed = 10});
-  chassis.moveToPoint(109, 119, 2500, {.maxSpeed = 77, .minSpeed = 35}, false);
-
+  middle_lift.retract();
+  chassis.moveToPoint(110.5, 119, 2500, {.maxSpeed = 77, .minSpeed = 35}, false);
+  
 
   //* emptying loader 3
   chassis.turnToHeading(0, 500, {.minSpeed = 10});
   matchload_unloader.extend();
   pros::delay(200);
-  intake.setState(Intake::states::STORING);
-  chassis.moveToPoint(109.75, 1200, 900, {.maxSpeed = 77, .minSpeed = 35}, false);
-  pros::delay(1600);
-  chassis.moveToPoint(109.75, 120.5, 1000, {.forwards = false, .maxSpeed = 77, .minSpeed = 35}, false);
+  
+  chassis.moveToPoint(111.35, 1200, 900, {.maxSpeed = 62, .minSpeed = 35}, false);
+  pros::delay(600);
+  chassis.moveToPoint(111.35, 1200, 900, {.maxSpeed = 80, .minSpeed = 35}, false);
+  pros::delay(600);
+  chassis.moveToPoint(111.35, 1200, 900, {.maxSpeed = 70, .minSpeed = 35}, false);
+  pros::delay(700);
+
+  //* moving off loader
+  chassis.moveToRelativePoint(0, -15, 1000, {.forwards = false, .minSpeed = 10}, false);
   matchload_unloader.retract();
   chassis.turnToHeading(90, 700, {.minSpeed = 10});
-  chassis.moveToRelativePoint(30, 0, 1000, {.minSpeed = 10}, false);
+  chassis.moveToRelativePoint(32, 0, 1000, {.minSpeed = 10}, false);
      // !s RESET TO RIGHT WALL 1 using mcl
-  mcl_localization.reset_particles({132, 120.5}, 8.0);
+  mcl_localization.reset_particles({132, 103}, 8.0);
   pros::delay(750);
 
   auto right_wall_11 = chassis.getPose();
@@ -854,11 +828,11 @@ chassis.moveToPoint(7.35-2, 64, 2000, {.minSpeed = 10}, false);
       mcl_localization.get_point_estimate().y,
       right_wall_11.theta);
 
-  //chassis.moveToPoint(124, 119, 800, {.forwards = false, .maxSpeed = 77, .minSpeed = 35}, false);
-  chassis.turnToHeading(172, 500, {.minSpeed = 10});
+
+  chassis.turnToHeading(150, 500, {.minSpeed = 10});
 
    // !s RESET TO RIGHT WALL 1 using mcl
-  mcl_localization.reset_particles({124, 119}, 8.0);
+  mcl_localization.reset_particles({124, 103}, 8.0);
   pros::delay(750);
 
   auto right_wall_2 = chassis.getPose();
@@ -866,5 +840,77 @@ chassis.moveToPoint(7.35-2, 64, 2000, {.minSpeed = 10}, false);
       mcl_localization.get_point_estimate().x,
       mcl_localization.get_point_estimate().y,
       right_wall_2.theta);
+
+  //* driving down the alley to home lands
+  
+ 
+  chassis.moveToRelativePoint(12, -110, 3000, {.forwards = true,.maxSpeed = 81, .minSpeed = 10}, false);
+
+   // !s RESET TO RIGHT WALL 2 using mcl
+  mcl_localization.reset_particles({126, 10}, 8.0);
+  pros::delay(750);
+
+  auto right_wall_3 = chassis.getPose();
+  chassis.setPose(
+      mcl_localization.get_point_estimate().x,
+      mcl_localization.get_point_estimate().y,
+      right_wall_3.theta);
+
+  chassis.moveToRelativePoint(-14, 21, 1000, {.forwards = false, .minSpeed = 10}, false);
+  chassis.turnToHeading(180, 700, {.minSpeed = 10});
+  middle_lift.extend();
+
+  //* scoring goal 3
+
+  chassis.moveToPoint(120, 65, 1000, {.forwards = false, .maxSpeed = 70, .minSpeed = 35}, false);
+  intake.setState(Intake::states::SCORING);
+  pros::delay(600);
+  intake.setState(Intake::states::OUTTAKE);
+  pros::delay(100);
+  intake.setState(Intake::states::SCORING);
+  pros::delay(1300);
+
+  matchload_unloader.extend();
+  intake.setState(Intake::states::STORING);
+
+  //*grabbing 4th loader
+  chassis.moveToPoint(124.25, -100, 1000, {.forwards = true, .maxSpeed = 60.5, .minSpeed = 32}, false);
+  pros::delay(500);
+  chassis.moveToPoint(123.7, -100, 1000, {.forwards = true, .maxSpeed = 75, .minSpeed = 35}, false);
+  pros::delay(500);
+  chassis.moveToPoint(123.5, -100, 1000, {.forwards = true, .maxSpeed = 72, .minSpeed = 35}, false);
+  pros::delay(600);
+
+  //* scoring 4th loader
+  chassis.moveToRelativePoint(-0.25, 66, 1000, {.forwards = false, .maxSpeed = 65}, false);
+  intake.setState(Intake::states::SCORING);
+  pros::delay(600);
+   intake.setState(Intake::states::SCORING);
+  pros::delay(200);
+   intake.setState(Intake::states::SCORING);
+  pros::delay(900);
+  matchload_unloader.retract();
+
+  // ! RESET TO Right GOAL 2
+  pros::delay(300);
+  auto right_goal_4 = chassis.getPose();
+  chassis.setPose(125.2, 45, right_goal_4.theta);
+
+  //* moving off goal
+  chassis.moveToPoint(102, -30, 800, {.forwards = true, .maxSpeed = 61.5, .minSpeed = 35}, false);
+  chassis.moveToPoint(102, -50, 850, {.forwards = true, .maxSpeed = 61.5, .minSpeed = 35}, false);
+  chassis.turnToHeading(-130, 700, {.minSpeed = 10});
+
+  //* clearing park
+  intake.setState(Intake::states::STORING);
+ chassis.moveToRelativePoint(-65, -20, 1000, {.forwards = true, .maxSpeed = 71}, true);
+ pros::delay(450);
+ matchload_unloader.extend();
+ pros::delay(350);
+ chassis.moveToRelativePoint(-52, -5, 1100, {.forwards = true, .minSpeed = 35}, false);
+ matchload_unloader.retract();
+ chassis.moveToRelativePoint(3, 0, 1000, {.forwards = false, .minSpeed = 35}, false);
+  
+
 
 }
