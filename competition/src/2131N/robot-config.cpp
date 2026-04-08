@@ -17,10 +17,10 @@ pros::Motor thirdStage(12);
 pros::Distance btmStorageDetector(18);
 
 pros::adi::Pneumatics goal_descore_right('D', false);
-pros::adi::Pneumatics middleGoalFlap('B', false);
+pros::adi::Pneumatics middle_descore('H', false);
 pros::adi::Pneumatics matchload_unloader('F', false);
 pros::adi::Pneumatics middle_lift('E', false);
-pros::adi::Pneumatics first_stage_lift('C', false);
+//pros::adi::Pneumatics first_stage_lift('C', false);
 pros::adi::Pneumatics storage_block('G', false);
 
 pros::Controller primary(pros::E_CONTROLLER_MASTER);
@@ -67,7 +67,7 @@ Intake intake(
     &secondStage,
     &thirdStage,
     &btmStorageDetector,
-    &middleGoalFlap,
+    &middle_descore,
     110.0f,
     &primary,
     pros::E_CONTROLLER_DIGITAL_L2,
