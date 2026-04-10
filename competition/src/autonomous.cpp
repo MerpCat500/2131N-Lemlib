@@ -136,19 +136,19 @@ void leftSide(bool is_red_team)
   pros::delay(200);  // Wait for the loader to extend before moving
   chassis.moveToPoint(29.95 , 24.0, 1000, {.maxSpeed = 90, .minSpeed = 40}, false);
   chassis.turnToHeading(-180.0, 500, {}, false);
-  chassis.moveToPoint(30.1, -100.0, 1200, {.maxSpeed = 74, .minSpeed = 40}, false);
+  chassis.moveToPoint(30.1, -100.0, 1100, {.maxSpeed = 74, .minSpeed = 40}, false);
 
   // ! Attempt to score
   auto after_loader = chassis.getPose();
-  chassis.moveToPoint(after_loader.x  , after_loader.y + 36.0, 1000, {.forwards = false, .maxSpeed = 75, .minSpeed = 40});
-  pros::delay(100);
-  chassis.moveToRelativePoint(Chassis::fromPolar(0, -0.23), 600, {.forwards = false, .minSpeed = 50}, true);
+  chassis.moveToPoint(after_loader.x-0.7  , after_loader.y + 36.0, 1000, {.forwards = false, .maxSpeed = 74, .minSpeed = 40});
+  pros::delay(0);
+  chassis.moveToRelativePoint(Chassis::fromPolar(0, -0.25), 600, {.forwards = false, .minSpeed = 15}, true);
   intake.setState(Intake::states::SCORING);
   pros::delay(300);
  intake.setState(Intake::states::OUTTAKE);
   pros::delay(100);
  intake.setState(Intake::states::SCORING);
-  pros::delay(1000);
+  pros::delay(1200);
  
   matchload_unloader.retract();
   chassis.cancelMotion();
@@ -170,32 +170,36 @@ void leftSide(bool is_red_team)
    pros::delay(550);
    matchload_unloader.extend();
   
-   pros::delay(1200);
+   pros::delay(500);
 
   // ! Lineup for Middle
   //chassis.turnToHeading(26 + 179+1.5+10, 1000, {.minSpeed = 10}, false);
   //chassis.moveToRelativePoint(Chassis::fromPolar(-13.5, 210.5), 1200, {.forwards = false, .minSpeed = 37}, false);
   chassis.turnToHeading(-135, 500, {.minSpeed = 10}, false);
-  chassis.moveToPoint(60, 64, 1000, {.forwards = false, .maxSpeed = 82, .minSpeed = 40}, false);
+  chassis.moveToPoint(60-.3, 64+.2, 1000, {.forwards = false, .maxSpeed = 82, .minSpeed = 40}, false);
   matchload_unloader.retract();
   middle_lift.retract();
 
   //! Scoring Middle
-  intake.setIntakeMultiplier(1.0, 1.0, 0.29);
-  intake.setState(Intake::states::SCORING);
+  intake.setIntakeMultiplier(1.0, 1.0, 0.45);
+   intake.setState(Intake::states::SCORING);
+  pros::delay(600);
+ intake.setState(Intake::states::OUTTAKE);
+  pros::delay(200);
+ intake.setState(Intake::states::SCORING);
   //intake.setMiddle(true);
-  pros::delay(1800);
+  pros::delay(1100);
   intake.setIntakeMultiplier(1.0, 1.0, 1.0);
 
   //! Move away from middle Goal
-  chassis.moveToPoint(41, 48.5, 1000, {.forwards = true, .maxSpeed = 82, .minSpeed = 40}, false);
+  chassis.moveToPoint(37.5, 46, 1000, {.forwards = true, .maxSpeed = 82, .minSpeed = 40}, false);
   
   //! Lineup for swipe
   chassis.turnToHeading(180, 1000, {.minSpeed = 10}, false);
   
   //! Swipe long goal
   goal_descore_right.retract();
-  chassis.moveToRelativePoint(-1.1, 19, 1000, {.forwards = false, .maxSpeed = 65}, false);
+  chassis.moveToRelativePoint(-1.1, 16.5, 1000, {.forwards = false, .maxSpeed = 67}, false);
   chassis.moveToRelativePoint(0, -1, 1000, {.forwards = true, .maxSpeed = 65}, false);
 
   
@@ -250,7 +254,7 @@ void rightSide(bool is_red_team)
    
    chassis.turnToHeading(-50, 640, {.maxSpeed = 60, .minSpeed = 47}, false);
    pros::delay(125);
-   chassis.moveToRelativePoint(-20, 21.5, 1000, {.forwards = true, .maxSpeed = 60}, false);
+   chassis.moveToRelativePoint(-19.8, 21.7, 1000, {.forwards = true, .maxSpeed = 60}, false);
    chassis.cancelMotion();
    intake.setIntakeMultiplier(.50, 1.0, 1.0);
 
@@ -959,7 +963,7 @@ void RightSide7Block(bool is_red_team)
 
   //! score long goal
    auto after_loader = chassis.getPose();
-  chassis.moveToPoint(after_loader.x +0.75 , after_loader.y + 36.0, 1000, {.forwards = false, .maxSpeed = 100, .minSpeed = 45});
+  chassis.moveToPoint(after_loader.x +0.6 , after_loader.y + 36.0, 1000, {.forwards = false, .maxSpeed = 100, .minSpeed = 45});
   pros::delay(100);
   chassis.moveToRelativePoint(Chassis::fromPolar(0, -0.23), 600, {.forwards = false, .minSpeed = 50}, true);
   intake.setState(Intake::states::SCORING);
@@ -967,7 +971,7 @@ void RightSide7Block(bool is_red_team)
  intake.setState(Intake::states::OUTTAKE);
   pros::delay(100);
  intake.setState(Intake::states::SCORING);
-  pros::delay(1500);
+  pros::delay(1700);
  
   matchload_unloader.retract();
   chassis.cancelMotion();
@@ -1013,7 +1017,7 @@ void RightSideDoubleMiddle(bool is_red_team)
 
    // ! Attempt to score
    auto after_loader = chassis.getPose();
-   chassis.moveToPoint(after_loader.x +0.25, after_loader.y + 36.0, 700, {.forwards = false, .maxSpeed = 125, .minSpeed = 100});
+   chassis.moveToPoint(after_loader.x , after_loader.y + 36.0, 700, {.forwards = false, .maxSpeed = 125, .minSpeed = 100});
    pros::delay(0);
    chassis.moveToRelativePoint(Chassis::fromPolar(0, -4), 100, {.forwards = false, .minSpeed = 40}, true);
    // intake.setState(Intake::states::SCORING);
@@ -1045,7 +1049,7 @@ void RightSideDoubleMiddle(bool is_red_team)
    //! grab under long goal blocks
    chassis.turnToPoint(112, 63.2, 900, { .maxSpeed = 110, .minSpeed = 65}, false);
    matchload_unloader.retract();
-   chassis.moveToPoint(112, 63.2, 900, { .maxSpeed = 110, .minSpeed = 65}, true);
+   chassis.moveToPoint(112, 64.9, 900, { .maxSpeed = 110, .minSpeed = 65}, true);
    pros::delay(600);
    matchload_unloader.extend();
   
@@ -1069,12 +1073,13 @@ void RightSideDoubleMiddle(bool is_red_team)
 
    //! moving to middle
    chassis.moveToPoint(90, 45, 800, {.forwards = false, .maxSpeed = 125, .minSpeed = 75}, false);
-   chassis.moveToPoint(50, 50, 1200, {.forwards = true, .maxSpeed = 125, .minSpeed = 80}, false);
+   chassis.moveToPoint(51, 50, 1200, {.forwards = true, .maxSpeed = 125, .minSpeed = 80}, false);
   
    chassis.turnToHeading(-135, 300, { .maxSpeed = 100, .minSpeed = 50});
   
-   chassis.moveToPoint(69, 59, 900, {.forwards = false, .maxSpeed = 125, .minSpeed = 65}, false);
-
+   chassis.moveToPoint(66, 60, 900, {.forwards = false, .maxSpeed = 125, .minSpeed = 65}, false);
+   
+   chassis.moveToPoint(67, 61.5, 900, {.forwards = false, .maxSpeed = 125, .minSpeed = 65}, false);
    middle_lift.retract();
    intake.setIntakeMultiplier(1.0, 1.0, 0.5);
    intake.setState(Intake::states::SCORING);

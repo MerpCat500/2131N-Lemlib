@@ -34,7 +34,7 @@ void initialize()
       {"Right Side 9 Block", " Right Side 9 Block ", RightSide9Block}, //11
   }); 
 
-  screen.initialize(10, true);
+  screen.initialize(1, true);
 
   screen.addTelemetries(
       {{"Battery", []() { return std::to_string(pros::battery::get_capacity()); }},
