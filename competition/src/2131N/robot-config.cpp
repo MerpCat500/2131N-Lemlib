@@ -6,22 +6,17 @@
 #include "pros/motor_group.hpp"
 #include "systems/chassis.hpp"
 
-pros::MotorGroup left_motors({-10, -9, -8}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
-pros::MotorGroup right_motors({7, 6, 5}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
+pros::MotorGroup left_motors({-1, -10, 7}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
+pros::MotorGroup right_motors({21, 18, -12}, pros::v5::MotorGears::blue, pros::v5::MotorUnits::deg);
 pros::Imu inertial(17);
 
-pros::MotorGroup firstStage({-14,-19});
-pros::Motor secondStage(16);
-pros::Motor thirdStage(12);
+pros::MotorGroup lift({-13, 11});
+pros::MotorGroup thirdStage({3});
+pros::Motor Mclaw(19);
 
-pros::Distance btmStorageDetector(18);
+pros::adi::Pneumatics legoclaww('G', false);
+pros::adi::Pneumatics flipclaw('H', false);
 
-pros::adi::Pneumatics goal_descore_right('D', false);
-pros::adi::Pneumatics middle_descore('H', false);
-pros::adi::Pneumatics matchload_unloader('F', false);
-pros::adi::Pneumatics middle_lift('E', false);
-//pros::adi::Pneumatics first_stage_lift('C', false);
-pros::adi::Pneumatics storage_block('G', false);
 
 pros::Controller primary(pros::E_CONTROLLER_MASTER);
 
@@ -32,7 +27,7 @@ lemlib::OdomSensors sensors{
     nullptr,  //
     &inertial};
 
-lemlib::Drivetrain drivetrain(&left_motors, &right_motors, 11.875, 3.21, 450.0, 10.0);
+lemlib::Drivetrain drivetrain(&left_motors, &right_motors, 10, 3.21, 400.0, 10.0);
 
 // lateral PID controller
 lemlib::ControllerSettings lateral_controller(
@@ -63,11 +58,11 @@ lemlib::ControllerSettings angular_controller(
 Chassis chassis({drivetrain, lateral_controller, angular_controller, sensors});
 
 Intake intake(
-    &firstStage,
-    &secondStage,
+    // &firstStage,
+    // &secondStage,
     &thirdStage,
-    &btmStorageDetector,
-    &middle_descore,
+    // &btmStorageDetector,
+    // &middle_descore,
     110.0f,
     &primary,
     pros::E_CONTROLLER_DIGITAL_L2,
@@ -76,6 +71,7 @@ Intake intake(
     pros::E_CONTROLLER_DIGITAL_R2);
 
 Screen screen;
+
 
 DistanceSensor left_distance({-1.5, 6.25}, -M_PI_2, 20);
 DistanceSensor right_distance({-2.75, -6}, M_PI_2, 1);

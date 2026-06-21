@@ -10,6 +10,8 @@ extern pros::Controller primary;
 
 extern pros::MotorGroup left_motors;
 extern pros::MotorGroup right_motors;
+extern pros::MotorGroup lift;
+extern pros::Motor Mclaw;
 
 extern pros::adi::Pneumatics matchload_unloader;
 
@@ -18,6 +20,10 @@ extern pros::adi::Pneumatics goal_descore_right;
 extern pros::adi::Pneumatics middle_descore;
 //extern pros::adi::Pneumatics first_stage_lift;
 extern pros::adi::Pneumatics storage_block;
+extern pros::adi::Pneumatics legoclaww;
+extern pros::adi::Pneumatics flipclaw;
+
+//pros::MotorGroup* bottom_stage_;
 
 extern Chassis chassis;
 

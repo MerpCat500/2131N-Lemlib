@@ -4,7 +4,8 @@
 #include "autonomous.hpp"
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
-  
+//#include "2131N/systems/intake.hpp"
+//pros::MotorGroup firstStage({-4, 3});
 
 //int topIntakeSpeed;
 //bool scoreSpeedPressed = false;
@@ -14,24 +15,27 @@
  *
  */
 
+ 
+
 void initialize()
 {
   chassis.calibrate(true);
   mcl_localization.set_enabled(false);
+  lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
   screen.addAutos({
       {"Debug", "Debug Auto, DO NOT RUN AT COMP", debug},     //this one counts as 0, so left side is 1
       {"Left Side", "Left Side Half Autonomous Win Point danielle's slay queen", leftSide},  //1
-      {"Right Side", "Right Side Half Autonomous Win Point", rightSide},  //2
-      {"MOve ONe Inch", "Right Side Eye Candy", rightSideFinals},  //3
-      {"RIGHT Side AWP ♥", "Right Side SOLOOOOOOOO Autonomous Win Point ♥", leftSideAwp}, //4
-      {"Skills", "Skills Autonomous", skills}, //5
-      {"SafeSkills", " Safest john deer run Skills Autonomous", Safeskills}, //6
-      {"VistaSkills", " vista half feild style", VistaSkills}, //7
-      {"Left Side 7 Block", " Left Side 7 Block", LeftSide7Block},  //8
-      {"Right Side 7 Block", " Right Side 7 Block ", RightSide7Block}, //9
-      {"Right Side Double Middle", " Rigt side 2x middle ", RightSideDoubleMiddle}, //10
-      {"Right Side 9 Block", " Right Side 9 Block ", RightSide9Block}, //11
+      // {"Right Side", "Right Side Half Autonomous Win Point", rightSide},  //2
+      // {"MOve ONe Inch", "Right Side Eye Candy", rightSideFinals},  //3
+      // {"RIGHT Side AWP ♥", "Right Side SOLOOOOOOOO Autonomous Win Point ♥", leftSideAwp}, //4
+      // {"Skills", "Skills Autonomous", skills}, //5
+      // {"SafeSkills", " Safest john deer run Skills Autonomous", Safeskills}, //6
+      // {"VistaSkills", " vista half feild style", VistaSkills}, //7
+      // {"Left Side 7 Block", " Left Side 7 Block", LeftSide7Block},  //8
+      // {"Right Side 7 Block", " Right Side 7 Block ", RightSide7Block}, //9
+      // {"Right Side Double Middle", " Rigt side 2x middle ", RightSideDoubleMiddle}, //10
+      // {"Right Side 9 Block", " Right Side 9 Block ", RightSide9Block}, //11
   }); 
 
   screen.initialize(1, true);
@@ -69,8 +73,9 @@ void competition_initialize() {}
 void autonomous()
 {
   //middle_lift.extend();
-  goal_descore_right.extend();
+  //goal_descore_right.extend();
   //middleGoalFlap.extend();
+  lift.set_brake_mode_all(pros::MotorBrake::hold);
 
   screen.getCurrentAutoCallback()(screen.getRedTeam());
 }
@@ -81,32 +86,71 @@ void autonomous()
  */
 void opcontrol()
 {
-  intake.setIntakeMultiplier(1.0, 1.0, 1.0);
-  intake.setMiddle(false);
+  // intake.setIntakeMultiplier(1.0, 1.0, 1.0);
+  // intake.setMiddle(false);
 
-  intake.setState(Intake::states::STORING);
-  intake.setState(Intake::states::STOPPED);
+  // intake.setState(Intake::states::STORING);
+  // intake.setState(Intake::states::STOPPED);
 
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+  lift.set_brake_mode_all(pros::MotorBrake::hold);
 
   while (true)
   {
     intake.teleOp();
 
-    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
+    
+    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
-      matchload_unloader.toggle();
+      legoclaww.toggle();
     }
 
-    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2))
+    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT))
     {
-      middle_lift.toggle();
-      // goal_descore_right.extend();
+      flipclaw.toggle();
     }
-    else if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
+
+
+
+    if(primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
     {
-      goal_descore_right.toggle();
+     Mclaw.set_brake_mode_all(pros::MotorBrake::hold);
+     Mclaw.move_voltage(12000);
+     
     }
+    else if(primary.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_B))
+    {
+     Mclaw.set_brake_mode_all(pros::MotorBrake::hold);
+     Mclaw.move_voltage(0);
+     
+    }
+
+    if(primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
+    {
+     Mclaw.set_brake_mode_all(pros::MotorBrake::hold);
+     Mclaw.move_voltage(-12000);
+     
+    }
+    else if(primary.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_A))
+    {
+     Mclaw.set_brake_mode_all(pros::MotorBrake::hold);
+     Mclaw.move_voltage(0);
+     
+    }
+
+    // if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2))
+    // {
+    //   claww.toggle();
+    // }
+    // if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2))
+    // {
+    //   middle_lift.toggle();
+    //   // goal_descore_right.extend();
+    // }
+    // else if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
+    // {
+    //   goal_descore_right.toggle();
+    // }
     // else if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1))
     // {
     // storage_block.toggle();
@@ -120,17 +164,53 @@ void opcontrol()
     // {
     //   //first_stage_lift.retract();
     // }
-    if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
+    // if (primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
+    // {
+
+    //   matchload_unloader.retract();
+    //   pros::delay(0);
+    //   middle_descore.extend();
+
+    // }
+     else if(primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
     {
-
-      matchload_unloader.retract();
-      pros::delay(0);
-      middle_descore.extend();
-
+     lift.set_brake_mode_all(pros::MotorBrake::hold);
+     lift.move_voltage(12000);
+     
     }
+    else if(primary.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_L1))
+    {
+     lift.set_brake_mode_all(pros::MotorBrake::hold);
+     lift.move_voltage(0);
+     
+    }
+
+
+
+
+    if(primary.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2))
+    {
+     lift.set_brake_mode_all(pros::MotorBrake::hold);
+     lift.move_voltage(-6000);
+     
+    }
+    else if(primary.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_L2))
+    {
+     lift.set_brake_mode_all(pros::MotorBrake::hold);
+     lift.move_voltage(0);
+     
+    }
+
+
+
+
     else if(primary.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_B))
     {
-      middle_descore.retract();
+     lift.set_brake_mode_all(pros::MotorBrake::coast);
+     pros::delay(1);
+     lift.set_zero_position(0);
+     lift.set_brake_mode_all(pros::MotorBrake::hold);
+     
     }
 
     if (primary.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
@@ -141,7 +221,7 @@ void opcontrol()
           17,
           false);
           
-          intake.setIntakeMultiplier(1.0, 1.0, 0.29);
+          //intake.setIntakeMultiplier(1.0, 1.0, 0.29);
       
     } 
     
@@ -153,7 +233,7 @@ void opcontrol()
           17,
           false);
       
-          intake.setIntakeMultiplier(1.0, 1.0, 1.0);
+         // intake.setIntakeMultiplier(1.0, 1.0, 1.0);
     }
   }
 }
