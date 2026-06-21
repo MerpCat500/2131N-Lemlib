@@ -14,9 +14,13 @@ pros::Imu inertial(17);
 pros::MotorGroup lift({-13, 11});
 pros::MotorGroup thirdStage({3});
 pros::Motor Mclaw(19);
+pros::Rotation MclawRotation(5);
 
 pros::adi::Pneumatics legoclaww('G', false);
 pros::adi::Pneumatics flipclaw('H', false);
+
+Lift DR4B(lift);
+Twister Wrist(Mclaw, MclawRotation);
 
 
 pros::Controller primary(pros::E_CONTROLLER_MASTER);

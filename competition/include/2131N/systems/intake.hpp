@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include "2131N/robot-config.hpp"
 #include "2131N/utils/change_detector.hpp"
 #include "main.h"
 #include "pros/abstract_motor.hpp"
@@ -19,6 +20,9 @@
 #include "pros/misc.h"
 #include "pros/motors.hpp"
 #include "pros/motor_group.hpp"
+#include "pros/rtos.hpp"
+
+#include "lift.hpp"
 
 
 class Intake
@@ -30,7 +34,30 @@ class Intake
            pros::controller_digital_e_t btn_in,
            pros::controller_digital_e_t btn_out,
            pros::controller_digital_e_t btn_r1,
-           pros::controller_digital_e_t btn_r2);
+           pros::controller_digital_e_t btn_r2)
+        : bottom_stage_(NULL),
+        middle_stage_(NULL),
+        top_stage_(NULL),
+        middle_stage_gate_(NULL),
+        bottom_detector_(NULL),
+        detection_range_(0),
+        primary_(NULL),
+        intake_button_(btn_in),
+        outtake_button_(btn_out),
+        score_top_button_(btn_r1),
+        score_middle_button(btn_r2),
+        update_thread_(
+            [this]() {
+              while (true)
+              {
+                this->update();
+                pros::delay(10);
+              }
+            },
+            "Intake Update")
+  {
+  }
+
 
  private:
  pros::MotorGroup* motor_group_;
@@ -69,6 +96,8 @@ class Intake
   size_t jam_loop_ = 0;
 
   double intake_multipliers[3] = {1.0, 1.0, 1.0};
+
+  bool toggle = false;
 
  public:
   enum class states
@@ -132,6 +161,7 @@ void teleOp()
     
     else if (primary_->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) { 
       //topIntakeSpeed = 12000;
+      toggle = !toggle;
       setState(states::OUTTAKE); 
     }
 
@@ -188,14 +218,27 @@ void teleOp()
       {
       
         case states::OUTTAKE: 
+          
+          DR4B.setState(Lift::liftStates::STAGE_2);
+          pros::delay(200);
+          if (toggle){
+          Wrist.setState(Twister::twisterStates::IN);
+          }
+          else  Wrist.setState(Twister::twisterStates::OUT);
+          DR4B.setState(Lift::liftStates::STAGE_1);
 
-          bottom_stage_->move_voltage(-12000 * intake_multipliers[0]);
+          
+          
+          //bottom_stage_->move_voltage(-12000 * intake_multipliers[0]);
+
           
           break;
         case states::OUTTAKEMIDDLE:
 
           bottom_stage_->move_voltage(12000 * intake_multipliers[0]);
          
+          break;
+        default:
           break;
         
        
